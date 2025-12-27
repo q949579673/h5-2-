@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>新疆民生十年报告</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <style>
+        /* --- 1. 现代风格变量定义 --- */
+        :root {
+            /* 背景：天山蓝到沙漠金的渐变 */
+            --bg-gradient: linear-gradient(135deg, #e0f7fa 0%, #fff8e1 100%);
+            /* 毛玻璃卡片背景 */
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            
+            /* 品牌色 - 更加鲜亮现代 */
+            --color-primary: #007AFF; /* 科技蓝 */
+            --color-accent: #FF9500;  /* 活力橙 */
+            --color-success: #34C759; /* 生态绿 */
+            --color-danger: #FF3B30;  /* 警示红 */
+            --text-main: #1D1D1F;
+            --text-sub: #86868B;
+            
+            --radius-card: 24px;
+            --radius-btn: 12px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
+        
+        body { 
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; /* 现代无衬线字体 */
+            background: var(--bg-gradient);
+            background-attachment: fixed; /* 固定背景 */
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden; /* 配合Tab切换，禁止body滚动 */
+        }
+
+        /* --- 2. 布局结构 (Tab App模式) --- */
+        #app-container {
+            width: 100%; height: 100%; position: relative;
+            overflow-y: auto; overflow-x: hidden;
+            padding-bottom: 100px; /* 为底部导航留白 */
+        }
+
+        /* 隐藏滚动条 */
+        #app-container::-webkit-scrollbar { width: 0; }
+
+        /* --- 3. 头部设计 (App Header) --- */
+        .app-header {
+            padding: 40px 24px 20px;
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-title { font-size: 22px; font-weight: 800; color: var(--text-main); }
+        .header-date { font-size: 12px; color: var(--color-primary); font-weight: 600; background: rgba(0,122,255,0.1); padding: 4px 10px; border-radius: 20px;}
+
+        /* --- 4. 底部导航栏 (Dock) --- */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 500px;
+            height: 64px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100; padding: 0 10px;
+            border: 1px solid var(--glass-border);
+        }
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-sub); transition: all 0.3s; cursor: pointer; height: 100%;
+        }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; transition: transform 0.3s; }
+        .nav-item span { font-size: 10px; font-weight: 500; transform: scale(0.9); }
+        
+        .nav-item.active { color: var(--color-primary); }
+        .nav-item.active i { transform: translateY(-2px); }
+        .nav-item.active span { font-weight: 700; }
+
+        /* --- 5. 内容卡片 (Glass Cards) --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card);
+            box-shadow: var(--glass-shadow);
+            margin: 20px 24px; padding: 24px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #007AFF 0%, #00C6FF 100%);
+            color: white; padding: 30px 24px; border: none;
+            box-shadow: 0 20px 40px rgba(0,122,255,0.3);
+        }
+        .hero-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+        .hero-sub { opacity: 0.9; font-size: 14px; margin-bottom: 20px; }
+        .hero-tag { 
+            display: inline-block; background: rgba(255,255,255,0.2); 
+            padding: 6px 12px; border-radius: 8px; font-size: 12px; backdrop-filter: blur(5px);
+        }
+
+        /* 标题样式 */
+        .section-title {
+            font-size: 18px; font-weight: 700; margin: 30px 24px 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-title::before {
+            content:''; width: 4px; height: 18px; background: var(--color-primary); border-radius: 2px;
+        }
+
+        /* 图表容器 */
+        .chart-box {
+            width: 100%; height: 300px; border-radius: 16px; overflow: hidden;
+        }
+        
+        /* 洞察胶囊 */
+        .insight-pill {
+            background: rgba(255, 149, 0, 0.1); color: #B36B00;
+            padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.5;
+            margin-bottom: 20px; display: flex; gap: 10px;
+        }
+        .insight-pill i { margin-top: 3px; }
+
+        /* --- 页面切换逻辑 --- */
+        .page-view { display: none; padding-top: 10px; }
+        .page-view.active { display: block; }
+
+        /* 交互提示 */
+        .click-hint {
+            text-align: center; font-size: 12px; color: var(--color-primary);
+            margin-bottom: 15px; padding: 8px; background: rgba(0,122,255,0.05);
+            border-radius: 8px; display: inline-block; width: 100%;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-header">
+    <div class="header-title">新疆日报 <span style="font-weight:400; font-size:16px;">数据透视</span></div>
+    <div class="header-date">2015-2025</div>
+</div>
+
+<div id="app-container">
+    
+    <div id="page-home" class="page-view active">
+        <div class="glass-card hero-card">
+            <div class="hero-title">新疆民生十年<br>从脱贫到幸福</div>
+            <div class="hero-sub">百万级词频大数据分析报告</div>
+            <div class="hero-tag">60周年</div>
+            <div class="hero-tag">脱贫攻坚</div>
+            <div class="hero-tag">70周年</div>
+        </div>
+
+        <div class="section-title">报告核心发现</div>
+        <div class="glass-card">
+            <div class="insight-pill" style="background: rgba(52, 199, 89, 0.1); color: var(--color-success);">
+                <i class="fas fa-quote-left"></i>
+                <div>脱贫类关键词在2020年达到顶峰，民生提质类关键词2020年后持续走高。</div>
+            </div>
+            <p style="font-size: 14px; color: #666; line-height: 1.6;">
+                2015年是自治区成立60周年，2025年将迎来70周年。这十年间，数据记录了新疆从消除绝对贫困到追求高质量幸福生活的历史跨越。
+            </p>
+        </div>
+
+        <div class="section-title">民生总述</div>
+        <div class="glass-card">
+            <div id="chart-overview" class="chart-box" style="height: 320px;"></div>
+        </div>
+    </div>
+
+    <div id="page-dev" class="page-view">
+        <div class="section-title">关键历史节点</div>
+        <div class="glass-card">
+            <div id="chart-timeline" class="chart-box" style="height: 240px;"></div>
+        </div>
+
+        <div class="section-title">乡村振兴接力</div>
+        <div class="glass-card">
+            <div class="insight-pill" style="background: rgba(255, 59, 48, 0.1); color: var(--color-danger);">
+                <i class="fas fa-chart-line"></i>
+                <div>红色“脱贫”曲线回落，绿色“振兴”曲线接棒上扬，形成完美的剪刀差。</div>
+            </div>
+            <div id="chart-rural" class="chart-box"></div>
+        </div>
+    </div>
+
+    <div id="page-sec" class="page-view">
+        <div class="section-title">教育与就业</div>
+        <div class="glass-card">
+            <div class="click-hint"><i class="fas fa-hand-pointer"></i> 点击柱状图年份，联动查看雷达图</div>
+            <div id="chart-edu-trend" class="chart-box" style="height: 220px; margin-bottom: 20px;"></div>
+            <div id="chart-edu-radar" class="chart-box" style="height: 280px;"></div>
+        </div>
+
+        <div class="section-title">医疗健康</div>
+        <div class="glass-card">
+            <div id="chart-medical" class="chart-box"></div>
+        </div>
+
+        <div class="section-title">生活保障</div>
+        <div class="glass-card">
+            <div id="chart-living" class="chart-box"></div>
+        </div>
+    </div>
+
+    <div id="page-future" class="page-view">
+        <div class="glass-card" style="background: linear-gradient(135deg, #FF9500 0%, #FFCC00 100%); color: white;">
+            <h2 style="margin-bottom: 10px;">70周年展望</h2>
+            <p style="opacity: 0.9; font-size: 14px;">2025年趋势预测</p>
+        </div>
+
+        <div class="section-title">幸福感指数</div>
+        <div class="glass-card">
+            <div class="insight-pill">
+                <i class="fas fa-smile"></i>
+                <div>预测显示，2025年“幸福感”与“获得感”词频将创十年新高。</div>
+            </div>
+            <div id="chart-happy" class="chart-box"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('page-home', this)">
+        <i class="fas fa-home"></i>
+        <span>总述</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('page-dev', this)">
+        <i class="fas fa-layer-group"></i>
+        <span>发展</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('page-sec', this)">
+        <i class="fas fa-shield-heart"></i>
+        <span>保障</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('page-future', this)">
+        <i class="fas fa-star"></i>
+        <span>展望</span>
+    </div>
+</div>
+
+<script>
+    // ================= 数据中心 (非整数优化版 - 保持不变) =================
+    const years = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+    
+    // 1. Overview
+    const dataPoverty = [12053, 15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
+    const dataQuality = [4357, 4549, 5758, 5957, 6285, 5789, 8293, 6720, 5698, 5825, 7142] ;
+
+    // 2. Edu & Job
+    const radarDataMap = {'2015': [5942, 2745, 483, 10698, 312, 4067], '2016': [6791, 3137, 552, 12226, 354, 4648], '2017': [7641, 3529, 621, 13754, 398, 5229], '2018': [8489, 3922, 691, 15283, 443, 5811], '2019': [8321, 3805, 614, 19403, 417, 5574], '2020': [11978, 3045, 487, 9294, 173, 6268], '2021': [9220, 3248, 641, 20446, 462, 7545], '2022': [6371, 2608, 374, 10036, 480, 4181], '2023': [5993, 2525, 333, 12871, 366, 3624], '2024': [5045, 1764, 350, 13964, 224, 3592], '2025': [4288, 1499, 297, 11869, 191, 3053]} ;
+    const jobTrend = [5942, 6791, 7641, 8489, 8321, 11978, 9220, 6371, 5993, 5045, 4288] ;
+
+    // 3. Medical
+    const medData = [3107, 3932, 3867, 4559, 4191, 10824, 7529, 3847, 3939, 3668, 3397] ;
+    const insData = [268, 355, 409, 420, 423, 721, 733, 559, 502, 833, 1164] ;
+    const checkData = [13, 27, 1209, 1503, 1821, 1205, 804, 402, 706, 105, 153] ;
+
+    // 4. Life Security
+    const housingData = [2152, 2301, 2693, 2813, 2981, 2456, 3460, 1617, 1358, 1293, 1229] ;
+    const socialData = [429, 534, 593, 628, 1640, 1405, 924, 522, 533, 410, 287] ;
+    const elderlyData = [1203, 1555, 1705, 1837, 1918, 1209, 2219, 1406, 1219, 1687, 2155] ;
+    const incomeData = [4067, 4648, 5229, 5811, 5574, 6268, 7545, 4181, 3624, 3592, 3053] ;
+
+    // 5. Rural
+    const ruralPoverty = [12053, 15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
+    const ruralRevital = [241, 487, 883, 3574, 1729, 1410, 5312, 3817, 3339, 2711, 4500] ;
+
+    // 6. Happy
+    const happyTrend = [435, 454, 575, 936, 1181, 672, 1279, 722, 482, 893, 1583] ;
+
+    // ================= 交互逻辑 (Tab Switch) =================
+    function switchTab(pageId, navItem) {
+        // 1. 切换底部导航状态
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        navItem.classList.add('active');
+
+        // 2. 切换页面内容
+        document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+
+        // 3. 滚动到顶部
+        document.getElementById('app-container').scrollTop = 0;
+
+        // 4. 懒加载图表 (避免Tab切换时图表未渲染)
+        setTimeout(() => {
+            if(pageId === 'page-home') initChartOverview();
+            if(pageId === 'page-dev') { initChartTimeline(); initChartRural(); }
+            if(pageId === 'page-sec') { initChartEdu(); initChartMedical(); initChartLiving(); }
+            if(pageId === 'page-future') initChartHappy();
+        }, 100);
+    }
+
+    // 初始化首页图表
+    window.onload = function() {
+        initChartOverview();
+    };
+
+    // ================= 图表配置 (Modern Style) =================
+    const commonGrid = {left:'3%', right:'4%', bottom:'3%', containLabel: true};
+    const colorPalette = ['#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#5856D6'];
+
+    // 1. 总述
+    function initChartOverview() {
+        const chart = echarts.init(document.getElementById('chart-overview'));
+        chart.setOption({
+            color: ['#FF3B30', '#FF9500'],
+            tooltip: {trigger: 'axis', backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: 12, borderWidth:0, padding:10, textStyle:{color:'#333'}},
+            legend: {bottom: 0, itemWidth: 8, itemHeight: 8, icon: 'circle'},
+            grid: {left:'3%', right:'8%', top:'10%', bottom:'12%', containLabel: true},
+            xAxis: {type: 'category', data: years, axisLine:{show:false}, axisTick:{show:false}, axisLabel:{color:'#86868B'}},
+            yAxis: {type: 'value', splitLine:{lineStyle:{color:'#f0f0f0'}}, axisLabel:{color:'#86868B'}},
+            series: [
+                {
+                    name: '脱贫攻坚', type: 'line', smooth: true, showSymbol: false,
+                    data: dataPoverty, lineStyle: {width: 4},
+                    markPoint: { symbolSize: 50, label:{fontSize:10}, data: [{coord: ['2020', 26593], value: '收官'}] }
+                },
+                {
+                    name: '民生提质', type: 'line', smooth: true, showSymbol: false,
+                    data: dataQuality, lineStyle: {width: 4},
+                    markPoint: { symbolSize: 50, label:{fontSize:10, color:'#fff'}, itemStyle:{color:'#FF9500'}, 
+                    data: [{coord: ['2025', 7142], value: '70周年'}] }
+                }
+            ]
+        });
+    }
+
+    // 2. 关键节点 (Timeline Bar)
+    function initChartTimeline() {
+        const chart = echarts.init(document.getElementById('chart-timeline'));
+        chart.setOption({
+            tooltip: {trigger: 'item'},
+            grid: {left:'10%', right:'10%', top:'10%', bottom:'10%'},
+            xAxis: {data: ['2015', '2020', '2025'], axisLine:{show:false}, axisTick:{show:false}},
+            yAxis: {show:false},
+            series: [{
+                type: 'bar', barWidth: 40,
+                itemStyle: {borderRadius: [8, 8, 0, 0]},
+                data: [
+                    {value: 2000, itemStyle:{color:'#E5E5EA'}, label:{show:true, position:'top', formatter:'60周年'}}, 
+                    {value: 15873, itemStyle:{color:'#FF3B30'}, label:{show:true, position:'top', formatter:'脱贫峰值'}}, 
+                    {value: 12000, itemStyle:{color:'#FF9500'}, label:{show:true, position:'top', formatter:'幸福展望'}}  
+                ]
+            }]
+        });
+    }
+
+    // 3. 乡村 (剪刀差)
+    function initChartRural() {
+        const chart = echarts.init(document.getElementById('chart-rural'));
+        chart.setOption({
+            color: ['#FF3B30', '#34C759'],
+            tooltip: {trigger: 'axis'},
+            legend: {bottom: 0},
+            grid: commonGrid,
+            xAxis: {type: 'category', data: years, axisLine:{show:false}, axisTick:{show:false}},
+            yAxis: {type: 'value', splitLine:{lineStyle:{type:'dashed', color:'#eee'}}},
+            series: [
+                {name: '脱贫攻坚', type: 'line', smooth: true, data: ruralPoverty, lineStyle: {width: 3}, areaStyle:{opacity:0.1}},
+                {name: '乡村振兴', type: 'line', smooth: true, data: ruralRevital, lineStyle: {width: 3}, areaStyle:{opacity:0.1}}
+            ]
+        });
+    }
+
+    // 4. 教育就业 (Interactive)
+    let radarChart = null;
+    function initChartEdu() {
+        const trendChart = echarts.init(document.getElementById('chart-edu-trend'));
+        trendChart.setOption({
+            tooltip: {trigger: 'axis'},
+            grid: {left:'2%', right:'2%', bottom:'5%', top:'10%', containLabel:true},
+            xAxis: {type: 'category', data: years, axisLine:{show:false}},
+            yAxis: {type: 'value', show:false},
+            series: [{
+                data: jobTrend, type: 'bar', name: '就业关注度', barWidth: 12,
+                itemStyle: {borderRadius: 6, color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0, color:'#007AFF'},{offset:1, color:'#00C6FF'}])},
+                emphasis: {itemStyle: {color: '#FF9500'}}
+            }]
+        });
+
+        if(!radarChart) radarChart = echarts.init(document.getElementById('chart-edu-radar'));
+        updateRadar('2024');
+
+        trendChart.on('click', function(params) { updateRadar(params.name); });
+    }
+
+    function updateRadar(year) {
+        const data = radarDataMap[year];
+        radarChart.setOption({
+            title: {text: year, left: 'center', top: 'center', textStyle:{fontSize:24, color:'#ddd'}},
+            radar: {
+                indicator: [
+                    { name: '就业', max: 15000 }, { name: '创业', max: 5000 },
+                    { name: '技能', max: 1000 }, { name: '教育', max: 22000 },
+                    { name: '职教', max: 1000 }, { name: '收入', max: 8000 }
+                ],
+                radius: '65%',
+                axisName: {color: '#86868B'}
+            },
+            series: [{
+                type: 'radar',
+                data: [{ value: data, name: '词频' }],
+                areaStyle: {color: 'rgba(0,122,255, 0.2)'},
+                lineStyle: {color: '#007AFF', width:3},
+                symbol: 'circle', symbolSize: 6, itemStyle:{color:'#fff', borderColor:'#007AFF', borderWidth:2}
+            }]
+        });
+    }
+
+    // 5. 医疗
+    function initChartMedical() {
+        const chart = echarts.init(document.getElementById('chart-medical'));
+        chart.setOption({
+            tooltip: {trigger: 'axis'},
+            legend: {bottom: 0},
+            grid: commonGrid,
+            xAxis: {type: 'category', data: years, axisLine:{show:false}},
+            yAxis: {type: 'value', splitLine:{lineStyle:{color:'#f5f5f5'}}},
+            series: [
+                {name: '医疗', type: 'bar', stack: 'total', data: medData, color: '#34C759'},
+                {name: '医保', type: 'bar', stack: 'total', data: insData, color: '#30B0C7'},
+                {name: '体检', type: 'bar', stack: 'total', data: checkData, color: '#FFD60A'}
+            ]
+        });
+    }
+
+    // 6. 生活保障
+    function initChartLiving() {
+        const chart = echarts.init(document.getElementById('chart-living'));
+        chart.setOption({
+            tooltip: {trigger: 'axis'},
+            legend: {top: 0},
+            grid: commonGrid,
+            xAxis: {type: 'category', data: years, axisLine:{show:false}},
+            yAxis: {type: 'value', splitLine:{lineStyle:{color:'#f5f5f5'}}},
+            series: [
+                {name: '收入', type: 'line', smooth:true, data: incomeData, color: '#FF9500', lineStyle:{width:3}},
+                {name: '住房', type: 'line', smooth:true, data: housingData, color: '#AF52DE', lineStyle:{width:3}},
+                {name: '养老', type: 'line', smooth:true, data: elderlyData, color: '#FF2D55', lineStyle:{width:3}},
+                {name: '社保', type: 'line', smooth:true, data: socialData, color: '#5856D6', lineStyle:{width:3}}
+            ]
+        });
+    }
+
+    // 7. 幸福
+    function initChartHappy() {
+        const chart = echarts.init(document.getElementById('chart-happy'));
+        chart.setOption({
+            tooltip: {trigger: 'axis'},
+            grid: commonGrid,
+            xAxis: {type: 'category', data: years, axisLine:{show:false}},
+            yAxis: {type: 'value', splitLine:{show:false}},
+            visualMap: {
+                show: false, dimension: 0,
+                pieces: [{lte: 5, color: '#ccc'}, {gt: 5, lte: 9, color: '#FF9500'}, {gt: 9, color: '#FF3B30'}]
+            },
+            series: [{
+                type: 'line', smooth: true, data: happyTrend, lineStyle:{width:5}, showSymbol: false,
+                markLine: {
+                    data: [{xAxis: '2025', label: {formatter: '新高', position:'start'}}],
+                    lineStyle: {color: '#FF3B30', type: 'dashed'}, symbol:'none'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(255, 149, 0, 0.4)'}, {offset: 1, color: 'rgba(255, 149, 0, 0)'}])
+                }
+            }]
+        });
+    }
+
+    window.onresize = function() {
+        document.querySelectorAll('.chart-box').forEach(el => {
+            const instance = echarts.getInstanceByDom(el);
+            if(instance) instance.resize();
+        });
+    }
+
+</script>
+</body>
+</html>
