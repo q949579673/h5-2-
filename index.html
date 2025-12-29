@@ -9,40 +9,37 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     
     <style>
-        /* --- 1. 全局定义 (红金风格) --- */
+        /* --- 1. 全局定义 (极简白底无网格) --- */
         :root {
-            /* 背景：不再是单色，而是为渐变做准备 */
-            --bg-dark: #450A0A;  /* 边缘深红 */
-            --bg-light: #991B1B; /* 中心亮红 (中国红) */
+            /* 背景：纯净的灰白，无纹理 */
+            --bg-color: #F8FAFC;
+            /* 卡片：纯白 */
+            --card-bg: #FFFFFF;
             
-            /* 卡片：半透明亮色磨砂，显得通透 */
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --card-border: rgba(255, 255, 255, 0.15);
+            /* 文字：深色系，保证阅读舒适度 */
+            --text-main: #1E293B; /* 接近黑色 */
+            --text-sub: #64748B;  /* 中灰色 */
             
-            --text-main: #FFFFFF;
-            /* 辅文：米白/淡金，比灰色更暖 */
-            --text-sub: #FDE68A; 
+            /* 核心主色：中国红 */
+            --theme-red: #DC2626;
             
-            /* 核心强调色：流光金 */
-            --accent-gold: #FBBF24;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
             
-            --radius-xl: 32px;
-            --radius-lg: 24px;
-            --radius-md: 16px;
+            /* 阴影：卡片悬浮感 */
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
         
         body { 
             font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; 
-            background-color: var(--bg-dark); 
+            background-color: var(--bg-color); 
             color: var(--text-main);
             overflow-x: hidden;
-            /* 背景核心调整：径向渐变，中间亮，四周暗 */
-            background-image: radial-gradient(circle at 50% 30%, var(--bg-light) 0%, var(--bg-dark) 90%);
-            background-attachment: fixed; /* 滚动时背景固定，更有质感 */
-            background-size: cover;
-            min-height: 100vh;
+            /* 已去除网格背景，保持纯净 */
         }
 
         ::-webkit-scrollbar { width: 0; }
@@ -50,23 +47,21 @@
         /* --- 2. 悬浮菜单 --- */
         .menu-btn {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
-            width: 56px; height: 56px; 
-            background: rgba(147, 28, 28, 0.6); 
-            backdrop-filter: blur(10px);
-            border-radius: 20px; 
+            width: 50px; height: 50px; 
+            background: #FFFFFF;
+            border-radius: 12px; 
             display: flex; justify-content: center; align-items: center;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
             transition: transform 0.2s;
         }
-        .menu-btn i { color: #fff; font-size: 24px; }
+        .menu-btn i { color: #334155; font-size: 20px; }
         .menu-btn:active { transform: scale(0.9); }
 
         .menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            /* 菜单背景：深红遮罩 */
-            background: rgba(69, 10, 10, 0.96); z-index: 999;
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.98); z-index: 999;
+            backdrop-filter: blur(5px);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
@@ -74,12 +69,11 @@
 
         .menu-list { list-style: none; text-align: center; width: 100%; height: 80%; overflow-y: auto; }
         .menu-item { 
-            font-size: 20px; color: rgba(255,255,255,0.6); padding: 16px 0; cursor: pointer; 
+            font-size: 18px; color: var(--text-sub); padding: 16px 0; cursor: pointer; 
             font-weight: 600; transition: all 0.2s;
         }
-        /* 菜单选中：金色 */
-        .menu-item.current { color: #FBBF24; font-size: 24px; font-weight: 800; text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
-        .close-menu { position: absolute; bottom: 40px; font-size: 36px; color: #fff; cursor: pointer; }
+        .menu-item.current { color: var(--theme-red); font-size: 22px; font-weight: 800; }
+        .close-menu { position: absolute; bottom: 40px; font-size: 32px; color: var(--text-main); cursor: pointer; }
 
         /* --- 3. 首页 --- */
         #home-page {
@@ -87,175 +81,192 @@
             padding-bottom: 60px;
         }
 
-        .header-section { padding: 70px 24px 30px; }
+        .header-section { padding: 60px 24px 30px; text-align: center; }
         
-        .main-title {
-            font-size: 46px; font-weight: 900; line-height: 1.1; margin-bottom: 12px;
-            /* 标题：纯白到淡金渐变 */
-            background: linear-gradient(to bottom, #FFFFFF 30%, #FDE68A 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .sub-title { font-size: 16px; color: rgba(255,255,255,0.85); letter-spacing: 2px; text-transform: uppercase; }
-        
-        /* 标签：金色边框，更有质感 */
+        /* 顶部标签 */
         .data-tag {
-            display: inline-block; 
-            background: linear-gradient(90deg, rgba(251, 191, 36, 0.2), transparent);
-            color: #FBBF24;
-            padding: 6px 14px; border-radius: 4px; font-size: 12px; margin-bottom: 20px; font-weight: bold;
-            border-left: 3px solid #FBBF24;
+            display: inline-block; background: #FEF2F2; color: #DC2626;
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 24px; font-weight: bold;
+            border: 1px solid #FECACA;
         }
+
+        /* --- 标题加框设计 (印章风格) --- */
+        .title-box {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 16px;
+            padding: 16px 30px;
+            /* 边框设计：双线红框 */
+            border: 3px solid #DC2626;
+            background-color: #FFFFFF;
+            border-radius: 4px; 
+            box-shadow: 6px 6px 0px rgba(220, 38, 38, 0.15); /* 硬朗投影 */
+        }
+        /* 内层装饰线 */
+        .title-box::after {
+            content: ''; position: absolute; left: 4px; top: 4px; right: 4px; bottom: 4px;
+            border: 1px solid #EF4444; pointer-events: none;
+        }
+
+        .main-title {
+            font-size: 36px; font-weight: 900; line-height: 1.2; margin: 0;
+            color: #B91C1C; letter-spacing: 2px;
+        }
+        
+        .sub-title { font-size: 15px; color: var(--text-sub); letter-spacing: 1px; font-weight: 500; }
 
         .intro-card {
             margin: 0 24px 30px; padding: 24px;
-            /* 首页文字卡片：通透感 */
-            background: rgba(255,255,255,0.1); 
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: #fff; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            border-left: 4px solid var(--theme-red);
         }
-        .quote { font-size: 16px; line-height: 1.7; color: #fff; font-weight: 500; text-align: justify; }
+        .quote { font-size: 15px; line-height: 1.8; color: #475569; font-weight: 400; text-align: justify; }
 
         /* 宫格布局 */
         .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; }
         .nav-card {
-            height: 160px; padding: 20px; position: relative; overflow: hidden;
-            border-radius: var(--radius-xl); cursor: pointer;
-            transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between;
-            /* 所有卡片基础底色：半透明白，依靠图标颜色区分，或者使用高饱和度渐变 */
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.1);
+            height: 150px; padding: 20px; position: relative; overflow: hidden;
+            border-radius: var(--radius-lg); cursor: pointer;
+            transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        .nav-card:active { transform: scale(0.96); }
+        .nav-card:active { transform: scale(0.98); }
         
-        /* 为了配合红色背景，卡片颜色要更鲜艳或使用对比色 */
-        .card-1 { background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%); box-shadow: 0 8px 15px rgba(238, 82, 83, 0.3); }
-        .card-2 { background: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%); box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3); }
-        .card-3 { background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%); box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3); }
-        .card-4 { background: linear-gradient(135deg, #54A0FF 0%, #2E86DE 100%); box-shadow: 0 8px 15px rgba(46, 134, 222, 0.3); }
-        .card-5 { background: linear-gradient(135deg, #1DD1A1 0%, #10AC84 100%); box-shadow: 0 8px 15px rgba(16, 172, 132, 0.3); }
-        .card-6 { background: linear-gradient(135deg, #FF9FF3 0%, #F368E0 100%); box-shadow: 0 8px 15px rgba(243, 104, 224, 0.3); }
-        /* 金色卡片 */
-        .card-7 { background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%); box-shadow: 0 8px 15px rgba(245, 158, 11, 0.3); }
-        .card-7 .nav-name, .card-7 .nav-desc, .card-7 .nav-icon { color: #450A0A; } /* 深色字 */
-        /* 青色卡片 */
-        .card-8 { background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%); box-shadow: 0 8px 15px rgba(6, 182, 212, 0.3); }
+        /* 颜色保持鲜艳 */
+        .card-1 { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
+        .card-2 { background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); }
+        .card-3 { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+        .card-4 { background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); }
+        .card-5 { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+        .card-6 { background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); }
         
+        .card-7 { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; } /* 黄色系 */
+        .card-8 { background: #CFFAFE; color: #155E75; border: 1px solid #A5F3FC; } /* 青色系 */
+
         .nav-icon { 
-            font-size: 28px; color: #fff; 
-            background: rgba(255,255,255,0.25); width: 48px; height: 48px;
+            font-size: 24px; 
+            width: 44px; height: 44px;
             display: flex; justify-content: center; align-items: center;
-            border-radius: 14px; 
+            border-radius: 12px; background: rgba(255,255,255,0.25);
         }
-        
-        .nav-name { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .nav-desc { font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 500; }
-        
-        /* 装饰圆圈 */
-        .nav-card::after {
-            content:''; position: absolute; right: -20px; bottom: -20px;
-            width: 100px; height: 100px; border-radius: 50%;
-            background: rgba(255,255,255,0.15); pointer-events: none;
-        }
+        /* 浅色卡片图标修正 */
+        .card-7 .nav-icon { background: rgba(251, 191, 36, 0.2); color: #B45309; }
+        .card-8 .nav-icon { background: rgba(34, 211, 238, 0.2); color: #0E7490; }
+
+        .nav-name { font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+        .nav-desc { font-size: 11px; opacity: 0.8; font-weight: 500; text-transform: uppercase; }
 
         /* --- 4. 详情页 --- */
         .section-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* 详情页背景：保持跟主页一致的红色基调，但稍微深一点以便阅读图表 */
-            background: #601418; 
-            z-index: 100; transform: translateY(100%);
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #F8FAFC; z-index: 100; transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex; flex-direction: column; overflow-y: auto;
         }
         .section-page.active { transform: translateY(0); }
 
         .sec-header {
-            padding: 30px 24px; 
+            padding: 20px 24px; 
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 99;
-            background: rgba(96, 20, 24, 0.95); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E2E8F0;
         }
-        .sec-title { font-size: 24px; font-weight: 800; color: #fff; }
+        
+        .sec-title { 
+            font-size: 20px; font-weight: 800; color: #1E293B; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sec-title::before {
+            content:''; display: block; width: 6px; height: 20px; border-radius: 3px;
+        }
+        
         .back-btn { 
-            width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 12px;
+            width: 36px; height: 36px; background: #F1F5F9; border-radius: 10px;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
+            color: #64748B;
         }
+        .back-btn:active { background: #E2E8F0; }
 
         .content-area { padding: 24px; padding-bottom: 80px; }
         
         .chart-box { 
             width: 100%; height: 320px; margin-bottom: 24px; padding: 16px; 
-            /* 图表容器：半透明深色，增加对比度 */
-            background: rgba(0, 0, 0, 0.2); 
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #fff; border-radius: var(--radius-lg);
+            border: 1px solid #E2E8F0;
+            box-shadow: var(--shadow-card);
         }
         
-        /* 洞察卡片：在红底上，白色半透明背景最干净 */
         .insight-card {
-            background: rgba(255, 255, 255, 0.08); 
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 4px solid #fff;
-            padding: 20px; border-radius: 12px; font-size: 14px; color: #F0F0F0; line-height: 1.6;
-            margin-bottom: 24px; display: flex; gap: 12px;
+            background: #EFF6FF; border: 1px solid #DBEAFE;
+            padding: 16px; border-radius: var(--radius-md); font-size: 14px; color: #1E40AF; line-height: 1.6;
+            margin-bottom: 24px; display: flex; gap: 10px; align-items: flex-start;
         }
         
-        /* 不同模块的装饰色 - 调亮 */
-        #sec-overview .insight-card { border-left-color: #F87171; }
-        #sec-overview .insight-card i { color: #F87171; }
+        /* 模块配色 */
+        #sec-overview .sec-title::before { background: #EF4444; }
+        #sec-overview .insight-card { background: #FEF2F2; border-color: #FECACA; color: #991B1B; }
         
-        #sec-edu .insight-card { border-left-color: #C084FC; }
-        #sec-edu .insight-card i { color: #C084FC; }
+        #sec-edu .sec-title::before { background: #8B5CF6; }
+        #sec-edu .insight-card { background: #F3E8FF; border-color: #E9D5FF; color: #5B21B6; }
 
-        #sec-job .insight-card { border-left-color: #60A5FA; }
-        #sec-job .insight-card i { color: #60A5FA; }
+        #sec-job .sec-title::before { background: #3B82F6; }
+        #sec-job .insight-card { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
 
-        #sec-happy .insight-card { border-left-color: #FBBF24; }
-        #sec-happy .insight-card i { color: #FBBF24; }
+        #sec-medical .sec-title::before { background: #10B981; }
+        #sec-medical .insight-card { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+
+        #sec-living .sec-title::before { background: #F97316; }
+        #sec-living .insight-card { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
+
+        #sec-rural .sec-title::before { background: #EC4899; }
+        #sec-rural .insight-card { background: #FDF2F8; border-color: #FBCFE8; color: #9D174D; }
+
+        #sec-happy .sec-title::before { background: #F59E0B; }
+        #sec-happy .insight-card { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
         
-        /* 点击提示 */
+        #sec-milestone .sec-title::before { background: #06B6D4; }
+
         .click-hint {
-            text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 12px; animation: pulse 2s infinite;
+            text-align: center; font-size: 12px; color: #94A3B8; margin-bottom: 12px;
         }
-        @keyframes pulse { 0% {opacity:0.6;} 50% {opacity:1;} 100% {opacity:0.6;} }
 
-        /* --- 里程碑 (金红配色) --- */
+        /* --- 里程碑 --- */
         .ms-wrapper {
             position: relative; padding-left: 20px; margin-top: 10px;
         }
         .ms-wrapper::before {
             content: ''; position: absolute; left: 19px; top: 10px; bottom: 10px;
-            width: 2px; background: rgba(255,255,255,0.2); z-index: 0;
+            width: 2px; background: #E2E8F0; z-index: 0;
         }
-        .ms-item { position: relative; margin-bottom: 40px; padding-left: 40px; opacity: 0; animation: fadeInUp 0.6s forwards; }
+        .ms-item { position: relative; margin-bottom: 30px; padding-left: 40px; opacity: 0; animation: fadeInUp 0.6s forwards; }
         .ms-item:nth-child(n) { animation-delay: 0.1s; }
 
         .ms-year-dot {
             position: absolute; left: 0; top: 0;
             width: 40px; height: 40px; line-height: 40px;
-            /* 默认年份：深红底+白字 */
-            background: #7F1D1D; color: #fff; border: 2px solid rgba(255,255,255,0.3);
+            background: #fff; color: #64748B; border: 2px solid #CBD5E1;
             text-align: center; border-radius: 50%;
             font-size: 12px; font-weight: bold; z-index: 2;
         }
         .ms-item.highlight .ms-year-dot { 
-            /* 高亮年份：金色底 */
-            background: #FBBF24; color: #7F1D1D; border-color: #F59E0B; 
-            transform: scale(1.1); box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+            background: #DC2626; color: #fff; border-color: #DC2626; 
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.4);
         }
         
         .ms-content {
-            background: rgba(255,255,255,0.08); border-radius: 16px;
-            padding: 16px; border: 1px solid rgba(255,255,255,0.1);
+            background: #fff; border-radius: 12px;
+            padding: 16px; border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .ms-text { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.9); }
+        .ms-text { font-size: 14px; line-height: 1.6; color: #334155; }
         .ms-tag { 
-            display: inline-block; font-size: 10px; background: rgba(255,255,255,0.15); 
-            padding: 2px 8px; border-radius: 8px; margin-bottom: 8px; color: #fff; font-weight: bold;
+            display: inline-block; font-size: 11px; background: #F1F5F9; 
+            padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; color: #475569; font-weight: bold;
         }
-        .highlight .ms-tag { background: #FBBF24; color: #450A0A; }
+        .highlight .ms-tag { background: #FEF2F2; color: #DC2626; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -265,7 +276,7 @@
 
 <div class="menu-btn" onclick="openMenu()"><i class="fas fa-bars"></i></div>
 <div class="menu-overlay" id="menuOverlay">
-    <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:30px; letter-spacing:2px;">REPORT MENU</div>
+    <div style="font-size:12px; color:#94A3B8; margin-bottom:30px; letter-spacing:2px;">REPORT MENU</div>
     <ul class="menu-list">
         <li class="menu-item current" onclick="goTo(&#39;home&#39;)">首页 · Dashboard</li>
         <li class="menu-item" onclick="goTo(&#39;sec-overview&#39;)">01. 民生总述</li>
@@ -275,16 +286,22 @@
         <li class="menu-item" onclick="goTo(&#39;sec-living&#39;)">05. 生活保障</li>
         <li class="menu-item" onclick="goTo(&#39;sec-rural&#39;)">06. 乡村振兴</li>
         <li class="menu-item" onclick="goTo(&#39;sec-happy&#39;)">07. 幸福展望</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-milestone&#39;)">08. 辉煌里程碑 <span style="font-size:10px;color:#22d3ee">END</span></li>
+        <li class="menu-item" onclick="goTo(&#39;sec-milestone&#39;)">08. 辉煌里程碑 <span style="font-size:10px;color:#06B6D4">END</span></li>
     </ul>
     <div class="close-menu" onclick="closeMenu()"><i class="fas fa-times"></i></div>
 </div>
 
 <div id="home-page">
     <div class="header-section">
-        <span class="data-tag">2015-2025 数据报告</span>
-        <h1 class="main-title">从脱贫<br>到幸福</h1>
-        <div class="sub-title">新疆民生十年数据透视</div>
+        
+        <div class="title-box">
+            <h1 class="main-title">从脱贫<br>到幸福</h1>
+        </div>
+        
+        <div class="sub-title">—— 新疆民生十年数据透视 ——</div>
+        <div style="margin-top: 15px;">
+            <span class="data-tag">2015-2025 DATA REPORT</span>
+        </div>
     </div>
 
     <div class="intro-card">
@@ -458,7 +475,7 @@
         <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
     </div>
     <div class="content-area">
-        <div class="insight-card">
+        <div class="insight-card" style="background:#ECFEFF; border-color:#A5F3FC; color:#0E7490">
             <i class="fas fa-road"></i>
             <div>十年词频，记录时代变迁；十年民生，映照群众幸福。从脱贫攻坚的全面胜利，到乡村振兴的深入推进，从公共服务的不断完善到人民生活品质的持续提升，新疆民生事业在这十年间实现了从“补短板"到“提品质”的跨越式发展。</div>
         </div>
@@ -521,9 +538,9 @@
     const happyTrend = [435, 454, 575, 936, 1181, 672, 1279, 722, 482, 893, 1583] ;
 
     // ================= ECharts =================
-    // 图表文字统一使用高亮米白
-    const lightText = '#FEE2E2'; 
-    const splitLineColor = 'rgba(255,255,255,0.1)';
+    // 图表文字颜色调整为深色
+    const textColor = '#475569'; 
+    const splitColor = '#E2E8F0';
     const gridConfig = {left:'2%', right:'2%', bottom:'2%', top:'15%', containLabel:true};
 
     // 1. Overview
@@ -531,12 +548,12 @@
         const chart = echarts.init(document.getElementById('chart-overview'));
         chart.setOption({
             tooltip: {trigger: 'axis'}, grid: gridConfig, 
-            legend: {textStyle:{color:lightText}, top:0}, 
-            xAxis: {type: 'category', data: years, axisLabel:{color:lightText}, axisLine:{show:false}},
-            yAxis: {type: 'value', splitLine:{lineStyle:{color:splitLineColor}}, axisLabel:{color:lightText}},
+            legend: {textStyle:{color:textColor}, top:0}, 
+            xAxis: {type: 'category', data: years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}},
+            yAxis: {type: 'value', splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
             series: [
-                {name: '脱贫', type: 'line', smooth:true, data: dataPoverty, lineStyle:{width:3, color:'#FCA5A5'}},
-                {name: '提质', type: 'line', smooth:true, data: dataQuality, lineStyle:{width:3, color:'#FCD34D'}}
+                {name: '脱贫', type: 'line', smooth:true, data: dataPoverty, lineStyle:{width:3, color:'#EF4444'}},
+                {name: '提质', type: 'line', smooth:true, data: dataQuality, lineStyle:{width:3, color:'#F59E0B'}}
             ]
         });
     }
@@ -545,12 +562,12 @@
     function initChartEdu() {
         echarts.init(document.getElementById('chart-edu-trend')).setOption({
             tooltip: {trigger: 'axis'}, grid: gridConfig, 
-            xAxis: {data:years, axisLabel:{color:lightText}}, 
-            yAxis:{splitLine:{lineStyle:{color:splitLineColor}}, axisLabel:{color:lightText}},
-            series: [{data: eduTrendData, type: 'line', smooth:true, areaStyle:{opacity:0.3, color:'#C084FC'}, itemStyle:{color:'#C084FC'}}]
+            xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, 
+            yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
+            series: [{data: eduTrendData, type: 'line', smooth:true, areaStyle:{opacity:0.3, color:'#8B5CF6'}, itemStyle:{color:'#8B5CF6'}}]
         });
         echarts.init(document.getElementById('chart-edu-structure')).setOption({
-            series: [{type:'pie', radius:['40%','70%'], data:eduStructData, color:['#D8B4FE','#E9D5FF','#F3E8FF'], label:{color:lightText}}]
+            series: [{type:'pie', radius:['40%','70%'], data:eduStructData, color:['#8B5CF6','#A78BFA','#DDD6FE'], label:{color:textColor}}]
         });
     }
 
@@ -559,8 +576,8 @@
     function initChartJob() {
         const trend = echarts.init(document.getElementById('chart-job-trend'));
         trend.setOption({
-            tooltip: {trigger:'axis'}, grid: gridConfig, xAxis: {data:years, axisLabel:{color:lightText}}, yAxis:{show:false},
-            series: [{data: jobTrend, type: 'bar', barWidth:12, itemStyle:{borderRadius:6, color:'#60A5FA'}}]
+            tooltip: {trigger:'axis'}, grid: gridConfig, xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{show:false},
+            series: [{data: jobTrend, type: 'bar', barWidth:12, itemStyle:{borderRadius:6, color:'#3B82F6'}}]
         });
         trend.on('click', p => updateRadar(p.name));
         
@@ -569,14 +586,14 @@
     }
     function updateRadar(year) {
         radarChart.setOption({
-            title: {text:year, left:'center', top:'center', textStyle:{color:'#fff', fontSize:20}},
+            title: {text:year, left:'center', top:'center', textStyle:{color:'#334155', fontSize:20, fontWeight:'bold'}},
             radar: {
                 indicator: [{name:'就业',max:15000},{name:'创业',max:5000},{name:'技能',max:1000},{name:'收入',max:8000}], 
-                radius:'65%', axisName:{color:lightText},
-                splitArea: { show: false },
-                splitLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } }
+                radius:'65%', axisName:{color:textColor},
+                splitArea: { show: true, areaStyle: { color: ['#fff', '#F1F5F9'] } },
+                splitLine: { lineStyle: { color: splitColor } }
             },
-            series: [{type:'radar', data:[{value:radarDataMap[year]}], areaStyle:{color:'rgba(96,165,250,0.5)'}, lineStyle:{color:'#60A5FA'}}]
+            series: [{type:'radar', data:[{value:radarDataMap[year]}], areaStyle:{color:'rgba(59, 130, 246, 0.4)'}, lineStyle:{color:'#3B82F6'}}]
         });
     }
 
@@ -584,21 +601,21 @@
     function initChartMedical() {
         echarts.init(document.getElementById('chart-medical')).setOption({
             tooltip: {trigger:'axis'}, 
-            legend:{top:0, textStyle:{color:lightText}}, 
+            legend:{top:0, textStyle:{color:textColor}}, 
             grid: gridConfig,
-            xAxis: {data:years, axisLabel:{color:lightText}}, yAxis:{splitLine:{lineStyle:{color:splitLineColor}}, axisLabel:{color:lightText}},
-            series: [{name:'医疗',type:'bar',stack:'t',data:medData,color:'#4ADE80'}, {name:'医保',type:'bar',stack:'t',data:insData,color:'#86EFAC'}, {name:'体检',type:'bar',stack:'t',data:checkData,color:'#FACC15'}]
+            xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
+            series: [{name:'医疗',type:'bar',stack:'t',data:medData,color:'#10B981'}, {name:'医保',type:'bar',stack:'t',data:insData,color:'#6EE7B7'}, {name:'体检',type:'bar',stack:'t',data:checkData,color:'#FACC15'}]
         });
     }
 
     // 6. Living
     function initChartLiving() {
         echarts.init(document.getElementById('chart-living')).setOption({
-            tooltip: {trigger:'axis'}, legend:{top:0, textStyle:{color:lightText}}, grid: gridConfig,
-            xAxis: {data:years, axisLabel:{color:lightText}}, yAxis:{splitLine:{lineStyle:{color:splitLineColor}}, axisLabel:{color:lightText}},
+            tooltip: {trigger:'axis'}, legend:{top:0, textStyle:{color:textColor}}, grid: gridConfig,
+            xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
             series: [
-                {name:'收入',type:'line',data:incomeData,color:'#F97316'}, {name:'住房',type:'line',data:housingData,color:'#C084FC'},
-                {name:'养老',type:'line',data:elderlyData,color:'#F87171'}, {name:'社保',type:'line',data:socialData,color:'#60A5FA'}
+                {name:'收入',type:'line',data:incomeData,color:'#F97316'}, {name:'住房',type:'line',data:housingData,color:'#8B5CF6'},
+                {name:'养老',type:'line',data:elderlyData,color:'#EF4444'}, {name:'社保',type:'line',data:socialData,color:'#3B82F6'}
             ]
         });
     }
@@ -607,19 +624,19 @@
     function initChartRural() {
         echarts.init(document.getElementById('chart-rural')).setOption({
             tooltip: {trigger:'axis'}, 
-            legend:{top:0, textStyle:{color:lightText}}, 
+            legend:{top:0, textStyle:{color:textColor}}, 
             grid: gridConfig,
-            xAxis: {data:years, axisLabel:{color:lightText}}, yAxis:{splitLine:{lineStyle:{color:splitLineColor}}, axisLabel:{color:lightText}},
-            series: [{name:'脱贫',type:'line',data:ruralPoverty,color:'#F87171'}, {name:'振兴',type:'line',data:ruralRevital,color:'#4ADE80'}]
+            xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
+            series: [{name:'脱贫',type:'line',data:ruralPoverty,color:'#EC4899'}, {name:'振兴',type:'line',data:ruralRevital,color:'#10B981'}]
         });
     }
 
     // 9. Happy
     function initChartHappy() {
         echarts.init(document.getElementById('chart-happy')).setOption({
-            tooltip: {trigger:'axis'}, grid: gridConfig, xAxis: {data:years, axisLabel:{color:lightText}}, yAxis:{show:false},
-            visualMap: {show:false, dimension:0, pieces:[{lte:5, color:'#CBD5E1'},{gt:5, lte:9, color:'#FCD34D'},{gt:9, color:'#EF4444'}]},
-            series: [{type:'line', data:happyTrend, lineStyle:{width:4}, markLine:{data:[{xAxis:'2025'}], lineStyle:{color:'#fff'}}}]
+            tooltip: {trigger:'axis'}, grid: gridConfig, xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{show:false},
+            visualMap: {show:false, dimension:0, pieces:[{lte:5, color:'#CBD5E1'},{gt:5, lte:9, color:'#F59E0B'},{gt:9, color:'#EF4444'}]},
+            series: [{type:'line', data:happyTrend, lineStyle:{width:4}, markLine:{data:[{xAxis:'2025'}], lineStyle:{color:'#DC2626'}}}]
         });
     }
 
