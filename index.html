@@ -9,27 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     
     <style>
-        /* --- 1. 全局定义 (极简白底无网格) --- */
+        /* --- 1. 全局定义 --- */
         :root {
-            /* 背景：纯净的灰白，无纹理 */
             --bg-color: #F8FAFC;
-            /* 卡片：纯白 */
             --card-bg: #FFFFFF;
-            
-            /* 文字：深色系，保证阅读舒适度 */
-            --text-main: #1E293B; /* 接近黑色 */
-            --text-sub: #64748B;  /* 中灰色 */
-            
-            /* 核心主色：中国红 */
+            --text-main: #1E293B; 
+            --text-sub: #64748B;  
             --theme-red: #DC2626;
-            
-            --radius-xl: 24px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            
-            /* 阴影：卡片悬浮感 */
-            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --shadow-float: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; outline: none; }
@@ -39,7 +25,6 @@
             background-color: var(--bg-color); 
             color: var(--text-main);
             overflow-x: hidden;
-            /* 已去除网格背景，保持纯净 */
         }
 
         ::-webkit-scrollbar { width: 0; }
@@ -69,11 +54,11 @@
 
         .menu-list { list-style: none; text-align: center; width: 100%; height: 80%; overflow-y: auto; }
         .menu-item { 
-            font-size: 18px; color: var(--text-sub); padding: 16px 0; cursor: pointer; 
+            font-size: 18px; color: #64748B; padding: 16px 0; cursor: pointer; 
             font-weight: 600; transition: all 0.2s;
         }
-        .menu-item.current { color: var(--theme-red); font-size: 22px; font-weight: 800; }
-        .close-menu { position: absolute; bottom: 40px; font-size: 32px; color: var(--text-main); cursor: pointer; }
+        .menu-item.current { color: #DC2626; font-size: 22px; font-weight: 800; }
+        .close-menu { position: absolute; bottom: 40px; font-size: 32px; color: #1E293B; cursor: pointer; }
 
         /* --- 3. 首页 --- */
         #home-page {
@@ -83,26 +68,22 @@
 
         .header-section { padding: 60px 24px 30px; text-align: center; }
         
-        /* 顶部标签 */
         .data-tag {
             display: inline-block; background: #FEF2F2; color: #DC2626;
             padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 24px; font-weight: bold;
             border: 1px solid #FECACA;
         }
 
-        /* --- 标题加框设计 (印章风格) --- */
         .title-box {
             display: inline-block;
             position: relative;
             margin-bottom: 16px;
             padding: 16px 30px;
-            /* 边框设计：双线红框 */
             border: 3px solid #DC2626;
             background-color: #FFFFFF;
             border-radius: 4px; 
-            box-shadow: 6px 6px 0px rgba(220, 38, 38, 0.15); /* 硬朗投影 */
+            box-shadow: 6px 6px 0px rgba(220, 38, 38, 0.15); 
         }
-        /* 内层装饰线 */
         .title-box::after {
             content: ''; position: absolute; left: 4px; top: 4px; right: 4px; bottom: 4px;
             border: 1px solid #EF4444; pointer-events: none;
@@ -113,52 +94,45 @@
             color: #B91C1C; letter-spacing: 2px;
         }
         
-        .sub-title { font-size: 15px; color: var(--text-sub); letter-spacing: 1px; font-weight: 500; }
+        .sub-title { font-size: 15px; color: #64748B; letter-spacing: 1px; font-weight: 500; }
 
         .intro-card {
             margin: 0 24px 30px; padding: 24px;
-            background: #fff; border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
-            border-left: 4px solid var(--theme-red);
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #DC2626;
         }
-        .quote { font-size: 15px; line-height: 1.8; color: #475569; font-weight: 400; text-align: justify; }
 
-        /* 宫格布局 */
         .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px; }
         .nav-card {
             height: 150px; padding: 20px; position: relative; overflow: hidden;
-            border-radius: var(--radius-lg); cursor: pointer;
+            border-radius: 16px; cursor: pointer;
             transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between;
             color: #fff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .nav-card:active { transform: scale(0.98); }
         
-        /* 颜色保持鲜艳 */
         .card-1 { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
-        .card-2 { background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); }
-        .card-3 { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
-        .card-4 { background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); }
+        .card-2 { background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%); } /* 里程碑配色 */
+        .card-3 { background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); } /* 就业配色 */
+        .card-4 { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); } /* 教育配色 */
         .card-5 { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
-        .card-6 { background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); }
-        
-        .card-7 { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; } /* 黄色系 */
-        .card-8 { background: #CFFAFE; color: #155E75; border: 1px solid #A5F3FC; } /* 青色系 */
+        .card-6 { background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); } /* 生活保障配色 */
+        .card-7 { background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); } /* 乡村振兴配色 */
+        .card-8 { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; } /* 幸福展望配色 */
 
         .nav-icon { 
-            font-size: 24px; 
-            width: 44px; height: 44px;
+            font-size: 24px; width: 44px; height: 44px;
             display: flex; justify-content: center; align-items: center;
             border-radius: 12px; background: rgba(255,255,255,0.25);
         }
-        /* 浅色卡片图标修正 */
-        .card-7 .nav-icon { background: rgba(251, 191, 36, 0.2); color: #B45309; }
-        .card-8 .nav-icon { background: rgba(34, 211, 238, 0.2); color: #0E7490; }
+        .card-8 .nav-icon { background: rgba(251, 191, 36, 0.2); color: #B45309; }
 
         .nav-name { font-size: 17px; font-weight: 800; margin-bottom: 2px; }
         .nav-desc { font-size: 11px; opacity: 0.8; font-weight: 500; text-transform: uppercase; }
 
-        /* --- 4. 详情页 --- */
+        /* --- 4. 详情页排版定义 --- */
         .section-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #F8FAFC; z-index: 100; transform: translateY(100%);
@@ -179,9 +153,7 @@
             font-size: 20px; font-weight: 800; color: #1E293B; 
             display: flex; align-items: center; gap: 8px;
         }
-        .sec-title::before {
-            content:''; display: block; width: 6px; height: 20px; border-radius: 3px;
-        }
+        .sec-title::before { content:''; display: block; width: 6px; height: 20px; border-radius: 3px; }
         
         .back-btn { 
             width: 36px; height: 36px; background: #F1F5F9; border-radius: 10px;
@@ -192,56 +164,49 @@
 
         .content-area { padding: 24px; padding-bottom: 80px; }
         
+        /* 文本与引言样式 */
+        .sec-quote { 
+            font-size: 14px; color: #475569; border-left: 4px solid #CBD5E1; 
+            padding-left: 12px; margin-bottom: 20px; font-style: italic; 
+            background: #F1F5F9; padding: 12px 16px; border-radius: 6px; 
+            line-height: 1.6;
+        }
+        .sec-quote .author { display: block; text-align: right; margin-top: 8px; font-size: 13px; font-style: normal; font-weight: bold;}
+        .sec-text { font-size: 15px; line-height: 1.8; color: #334155; margin-bottom: 16px; text-align: justify; }
+        .sec-sub-title { font-size: 17px; font-weight: bold; color: #1E293B; margin: 24px 0 12px; padding-left: 10px; border-left: 4px solid #DC2626; }
+
         .chart-box { 
             width: 100%; height: 320px; margin-bottom: 24px; padding: 16px; 
-            background: #fff; border-radius: var(--radius-lg);
+            background: #fff; border-radius: 16px;
             border: 1px solid #E2E8F0;
-            box-shadow: var(--shadow-card);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
         
         .insight-card {
             background: #EFF6FF; border: 1px solid #DBEAFE;
-            padding: 16px; border-radius: var(--radius-md); font-size: 14px; color: #1E40AF; line-height: 1.6;
+            padding: 16px; border-radius: 12px; font-size: 14px; color: #1E40AF; line-height: 1.6;
             margin-bottom: 24px; display: flex; gap: 10px; align-items: flex-start;
         }
         
         /* 模块配色 */
         #sec-overview .sec-title::before { background: #EF4444; }
-        #sec-overview .insight-card { background: #FEF2F2; border-color: #FECACA; color: #991B1B; }
-        
-        #sec-edu .sec-title::before { background: #8B5CF6; }
-        #sec-edu .insight-card { background: #F3E8FF; border-color: #E9D5FF; color: #5B21B6; }
-
-        #sec-job .sec-title::before { background: #3B82F6; }
-        #sec-job .insight-card { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
-
-        #sec-medical .sec-title::before { background: #10B981; }
-        #sec-medical .insight-card { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
-
-        #sec-living .sec-title::before { background: #F97316; }
-        #sec-living .insight-card { background: #FFF7ED; border-color: #FED7AA; color: #9A3412; }
-
-        #sec-rural .sec-title::before { background: #EC4899; }
-        #sec-rural .insight-card { background: #FDF2F8; border-color: #FBCFE8; color: #9D174D; }
-
-        #sec-happy .sec-title::before { background: #F59E0B; }
-        #sec-happy .insight-card { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
-        
         #sec-milestone .sec-title::before { background: #06B6D4; }
+        #sec-job .sec-title::before { background: #3B82F6; }
+        #sec-edu .sec-title::before { background: #8B5CF6; }
+        #sec-medical .sec-title::before { background: #10B981; }
+        #sec-living .sec-title::before { background: #F97316; }
+        #sec-rural .sec-title::before { background: #EC4899; }
+        #sec-happy .sec-title::before { background: #F59E0B; }
 
-        .click-hint {
-            text-align: center; font-size: 12px; color: #94A3B8; margin-bottom: 12px;
-        }
+        .click-hint { text-align: center; font-size: 12px; color: #94A3B8; margin-bottom: 12px; }
 
-        /* --- 里程碑 --- */
-        .ms-wrapper {
-            position: relative; padding-left: 20px; margin-top: 10px;
-        }
+        /* --- 里程碑详细样式 --- */
+        .ms-wrapper { position: relative; padding-left: 20px; margin-top: 10px; }
         .ms-wrapper::before {
             content: ''; position: absolute; left: 19px; top: 10px; bottom: 10px;
             width: 2px; background: #E2E8F0; z-index: 0;
         }
-        .ms-item { position: relative; margin-bottom: 30px; padding-left: 40px; opacity: 0; animation: fadeInUp 0.6s forwards; }
+        .ms-item { position: relative; margin-bottom: 40px; padding-left: 40px; opacity: 0; animation: fadeInUp 0.6s forwards; }
         .ms-item:nth-child(n) { animation-delay: 0.1s; }
 
         .ms-year-dot {
@@ -258,18 +223,25 @@
         
         .ms-content {
             background: #fff; border-radius: 12px;
-            padding: 16px; border: 1px solid #E2E8F0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 20px; border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
-        .ms-text { font-size: 14px; line-height: 1.6; color: #334155; }
         .ms-tag { 
-            display: inline-block; font-size: 11px; background: #F1F5F9; 
-            padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; color: #475569; font-weight: bold;
+            display: inline-block; font-size: 12px; background: #F1F5F9; 
+            padding: 4px 10px; border-radius: 6px; margin-bottom: 10px; color: #475569; font-weight: bold;
         }
         .highlight .ms-tag { background: #FEF2F2; color: #DC2626; }
+        .ms-text { font-size: 15px; line-height: 1.8; color: #1E293B; margin-bottom: 12px; font-weight: bold;}
+        .ms-excerpt {
+            font-size: 14px; color: #475569; background: #F8FAFC; 
+            padding: 16px; border-radius: 8px; border: 1px dashed #CBD5E1;
+            line-height: 1.7; text-align: justify; margin-bottom: 12px;
+        }
+        .ms-source {
+            font-size: 12px; color: #94A3B8; text-align: right;
+        }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
     </style>
 </head>
 <body>
@@ -278,219 +250,255 @@
 <div class="menu-overlay" id="menuOverlay">
     <div style="font-size:12px; color:#94A3B8; margin-bottom:30px; letter-spacing:2px;">REPORT MENU</div>
     <ul class="menu-list">
-        <li class="menu-item current" onclick="goTo(&#39;home&#39;)">首页 · Dashboard</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-overview&#39;)">01. 民生总述</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-edu&#39;)">02. 教育发展</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-job&#39;)">03. 就业创业</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-medical&#39;)">04. 医疗健康</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-living&#39;)">05. 生活保障</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-rural&#39;)">06. 乡村振兴</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-happy&#39;)">07. 幸福展望</li>
-        <li class="menu-item" onclick="goTo(&#39;sec-milestone&#39;)">08. 辉煌里程碑 <span style="font-size:10px;color:#06B6D4">END</span></li>
+        <li class="menu-item current" onclick="goTo('home')">首页 · Dashboard</li>
+        <li class="menu-item" onclick="goTo('sec-overview')">01. 民生总述</li>
+        <li class="menu-item" onclick="goTo('sec-milestone')">02. 辉煌里程碑</li>
+        <li class="menu-item" onclick="goTo('sec-job')">03. 就业创业</li>
+        <li class="menu-item" onclick="goTo('sec-edu')">04. 教育发展</li>
+        <li class="menu-item" onclick="goTo('sec-medical')">05. 医疗健康</li>
+        <li class="menu-item" onclick="goTo('sec-living')">06. 生活保障</li>
+        <li class="menu-item" onclick="goTo('sec-rural')">07. 乡村振兴</li>
+        <li class="menu-item" onclick="goTo('sec-happy')">08. 幸福展望 <span style="font-size:10px;color:#F59E0B">END</span></li>
     </ul>
     <div class="close-menu" onclick="closeMenu()"><i class="fas fa-times"></i></div>
 </div>
 
 <div id="home-page">
     <div class="header-section">
-        
         <div class="title-box">
-            <h1 class="main-title">从脱贫<br>到幸福</h1>
+            <h1 class="main-title">汔可小康<br>民安乐业</h1>
         </div>
-        
         <div class="sub-title">—— 新疆民生十年数据透视 ——</div>
         <div style="margin-top: 15px;">
-            <span class="data-tag">2015-2025 DATA REPORT</span>
+            <span class="data-tag">2016-2025 DATA REPORT</span>
         </div>
     </div>
 
     <div class="intro-card">
-        <p class="quote">今年是2026年，我们站在新疆维吾尔自治区成立70周年的历史节点回望过去十年，这一时期，新疆民生事业经历了全面推进，持续跃升的关键发展阶段。从脱贫攻坚到乡村振兴，从补齐民生短板到推动公共服务提质增效，新疆日报2015-2025年的报道词频变化，是千万群众生活品质的不断提升也是新疆民生建设扎实推进的真实注脚。</p>
+        <div class="sec-quote">
+            “民之所忧，我必念之；民之所盼，我必行之。”
+            <span class="author">——习主席在二零二二年新年贺词</span>
+        </div>
+        <p class="sec-text" style="text-indent: 0;"><strong>【前言】</strong>2026 年，我们站在新疆维吾尔自治区成立70周年的历史节点回望过去十年。2016—2025年，是新疆民生事业全面推进、持续跃升的关键十年。从脱贫攻坚到乡村振兴，从补齐民生短板到推动公共服务提质增效，新疆日报十年报道词频的变迁，正是千万群众生活品质节节攀升的生动写照，也是新疆民生建设扎实推进、温暖前行的真实注脚。</p>
+        <p class="sec-text" style="text-indent: 0; margin-bottom: 0;"><strong>【导读】</strong>本H5聚焦新疆十年民生发展脉络，解锁十年辉煌里程碑，从教育发展、就业创业、医疗健康、生活保障、乡村振兴五大维度，细数民生实事落地生根的点滴变化；每一页都是烟火暖意，每一幕都是奋进华章，邀您共赏新疆十年民生答卷。</p>
     </div>
 
     <div class="nav-grid">
-        <div class="nav-card card-1" onclick="goTo(&#39;sec-overview&#39;)">
-            <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
-            <div>
-                <div class="nav-name">民生总述</div>
-                <div class="nav-desc">Overview</div>
-            </div>
-        </div>
-        <div class="nav-card card-3" onclick="goTo(&#39;sec-edu&#39;)">
-            <div class="nav-icon"><i class="fas fa-book-reader"></i></div>
-            <div>
-                <div class="nav-name">教育发展</div>
-                <div class="nav-desc">Education</div>
-            </div>
-        </div>
-        <div class="nav-card card-4" onclick="goTo(&#39;sec-job&#39;)">
-            <div class="nav-icon"><i class="fas fa-briefcase"></i></div>
-            <div>
-                <div class="nav-name">就业创业</div>
-                <div class="nav-desc">Employment</div>
-            </div>
-        </div>
-        <div class="nav-card card-5" onclick="goTo(&#39;sec-medical&#39;)">
-            <div class="nav-icon"><i class="fas fa-hospital-user"></i></div>
-            <div>
-                <div class="nav-name">医疗健康</div>
-                <div class="nav-desc">Medical</div>
-            </div>
-        </div>
-        <div class="nav-card card-2" onclick="goTo(&#39;sec-living&#39;)">
-            <div class="nav-icon"><i class="fas fa-home"></i></div>
-            <div>
-                <div class="nav-name">生活保障</div>
-                <div class="nav-desc">Living</div>
-            </div>
-        </div>
-        <div class="nav-card card-6" onclick="goTo(&#39;sec-rural&#39;)">
-            <div class="nav-icon"><i class="fas fa-seedling"></i></div>
-            <div>
-                <div class="nav-name">乡村振兴</div>
-                <div class="nav-desc">Rural</div>
-            </div>
-        </div>
-        <div class="nav-card card-7" onclick="goTo(&#39;sec-happy&#39;)">
-            <div class="nav-icon"><i class="fas fa-smile-beam"></i></div>
-            <div>
-                <div class="nav-name">幸福展望</div>
-                <div class="nav-desc">Happiness</div>
-            </div>
-        </div>
-        <div class="nav-card card-8" onclick="goTo(&#39;sec-milestone&#39;)">
-            <div class="nav-icon"><i class="fas fa-road"></i></div>
-            <div>
-                <div class="nav-name">辉煌里程碑</div>
-                <div class="nav-desc">Milestones</div>
-            </div>
-        </div>
+        <div class="nav-card card-1" onclick="goTo('sec-overview')"><div class="nav-icon"><i class="fas fa-chart-line"></i></div><div><div class="nav-name">民生总述</div><div class="nav-desc">Overview</div></div></div>
+        <div class="nav-card card-2" onclick="goTo('sec-milestone')"><div class="nav-icon"><i class="fas fa-road"></i></div><div><div class="nav-name">辉煌里程碑</div><div class="nav-desc">Milestones</div></div></div>
+        <div class="nav-card card-3" onclick="goTo('sec-job')"><div class="nav-icon"><i class="fas fa-briefcase"></i></div><div><div class="nav-name">就业创业</div><div class="nav-desc">Employment</div></div></div>
+        <div class="nav-card card-4" onclick="goTo('sec-edu')"><div class="nav-icon"><i class="fas fa-book-reader"></i></div><div><div class="nav-name">教育发展</div><div class="nav-desc">Education</div></div></div>
+        <div class="nav-card card-5" onclick="goTo('sec-medical')"><div class="nav-icon"><i class="fas fa-hospital-user"></i></div><div><div class="nav-name">医疗健康</div><div class="nav-desc">Medical</div></div></div>
+        <div class="nav-card card-6" onclick="goTo('sec-living')"><div class="nav-icon"><i class="fas fa-home"></i></div><div><div class="nav-name">生活保障</div><div class="nav-desc">Living</div></div></div>
+        <div class="nav-card card-7" onclick="goTo('sec-rural')"><div class="nav-icon"><i class="fas fa-seedling"></i></div><div><div class="nav-name">乡村振兴</div><div class="nav-desc">Rural</div></div></div>
+        <div class="nav-card card-8" onclick="goTo('sec-happy')"><div class="nav-icon"><i class="fas fa-smile-beam"></i></div><div><div class="nav-name">幸福展望</div><div class="nav-desc">Happiness</div></div></div>
     </div>
 </div>
 
 <div id="sec-overview" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">01 民生总述</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="sec-header"><div class="sec-title">01 民生总述</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
     <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-info-circle"></i>
-            <div>脱贫攻坚在2020年收官，2020年后民生提质成为新主线。</div>
-        </div>
+        <div class="sec-sub-title">“民生”竟然出现这么多！</div>
+        <p class="sec-text">新疆始终坚持以人民为中心，“十四五”以来，自治区每年将财政支出70%以上投入民生领域，聚焦就业、教育、医疗、社保、住房、乡村振兴等重点领域，把群众的“急难愁盼”变为“幸福清单”。<br><br>数据显示，2016年至2025年间，“民生”及关联词汇在权威报道中呈现出高频与稳步增长的态势。特别是2020年脱贫攻坚收官之年与2025年自治区成立70周年之际，词频迎来了两次显著跃升。这一组组上扬的数据曲线，直观反映了惠民工程的落地力度与深切关怀。</p>
         <div id="chart-overview" class="chart-box"></div>
-    </div>
-</div>
+        
+        <div class="sec-sub-title">讲好“民生”，我们从这些方面看</div>
+        <p class="sec-text">讲好“民生”二字，既要见政策力度，更要见生活温度。十年间，新疆日报的报道从不止于宏大叙事，而是落笔于一个个真实可感的生活场景。每一个关键词，都是一份民生承诺；每一篇报道，都是一段幸福足迹。</p>
+        <div id="chart-overview-bubble" class="chart-box" style="height: 280px;"></div>
 
-<div id="sec-edu" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">02 教育发展</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
+        <div class="sec-sub-title">讲好“民生”，我们通过这些方式谈</div>
+        <p class="sec-text">在各类报道中，深入一线、讲述百姓故事的通讯报道与传递权威声音的消息占据了主导地位，合计占比逾七成。此外，以细腻笔触捕捉温暖瞬间的特写，以及洞察发展脉络的深度调查报告，同样构成了民生报道的重要版图。<br><br>从简明扼要的消息，到数据支撑的调查，再到直面基层的专访……不同体裁，同一份初心。</p>
+        <div id="chart-overview-pie" class="chart-box" style="height: 280px;"></div>
+
+        <div class="sec-sub-title">讲好“民生”，我们提及这些地方</div>
+        <p class="sec-text">十年间，新疆日报的民生报道覆盖天山南北，从北疆到南疆，从城市到乡村，笔触所至皆是民生冷暖。<br>我们通过梳理各地州市报道热度，清晰看见新疆民生建设的全域推进轨迹：既聚焦重点区域如南疆四地州的发展，又关注全区各地民生实事落地，让每一个地区、每一位群众的幸福变迁，都被认真记录、真诚呈现。不同地域，同频温暖，这正是新疆民生事业均衡发展的生动写照。</p>
+        <div id="chart-overview-bar" class="chart-box" style="height: 300px;"></div>
+
+        <div class="insight-card" style="margin-top:24px; border-left: 4px solid #EF4444;">
             <i class="fas fa-info-circle"></i>
-            <div>教育事业在十年间实现了从“普及“到“优质”的跨越，成为新疆民生改善的重要驱动力。</div>
+            <div><strong>总结：</strong>2016—2025 年，“民生”始终是新疆日报十年报道中最鲜明、最核心的主题。十年笔墨，十年答卷。这一部分内容，既是对新疆十年民生发展的整体回望，也为后续深入解读铺就了温暖而清晰的底色。</div>
         </div>
-        <div id="chart-edu-trend" class="chart-box"></div>
-        <div id="chart-edu-structure" class="chart-box"></div>
-    </div>
-</div>
-
-<div id="sec-job" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">03 就业创业</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-info-circle"></i>
-            <div>2015-2025年间，就业政策持续发力，就业结构更加优化，稳就业、促创业成为稳经济、惠民生的重要支撑。</div>
-        </div>
-        <div class="click-hint"><i class="fas fa-hand-pointer"></i> 点击柱状图年份查看雷达分布</div>
-        <div id="chart-job-trend" class="chart-box" style="height:250px;"></div>
-        <div id="chart-job-radar" class="chart-box"></div>
-    </div>
-</div>
-
-<div id="sec-medical" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">04 医疗健康</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-info-circle"></i>
-            <div>医疗服务体系不断完善，全民健康保障能力显著提升，成为群众获得感提升的关键领域。</div>
-        </div>
-        <div id="chart-medical" class="chart-box"></div>
-    </div>
-</div>
-
-<div id="sec-living" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">05 生活保障</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-info-circle"></i>
-            <div>社会保障水平不断提高，基本生活保障更加坚实，群众生活品质稳步提升。</div>
-        </div>
-        <div id="chart-living" class="chart-box" style="height:350px;"></div>
-    </div>
-</div>
-
-<div id="sec-rural" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">06 乡村振兴</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-info-circle"></i>
-            <div>乡村地区在脱贫攻坚和乡村振兴的双重推动下发生了深刻变化，农村民生水平显著提言。</div>
-        </div>
-        <div id="chart-rural" class="chart-box"></div>
-    </div>
-</div>
-
-<div id="sec-happy" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">07 幸福展望</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
-    <div class="content-area">
-        <div class="insight-card">
-            <i class="fas fa-smile-beam"></i>
-            <div>基于现有趋势预测，2025年自治区成立70周年之际，“幸福感”与“获得感”的报道词频将创十年新高。</div>
-        </div>
-        <div id="chart-happy" class="chart-box"></div>
     </div>
 </div>
 
 <div id="sec-milestone" class="section-page">
-    <div class="sec-header">
-        <div class="sec-title">08 辉煌里程碑</div>
-        <div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div>
-    </div>
+    <div class="sec-header"><div class="sec-title">02 辉煌里程碑</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
     <div class="content-area">
-        <div class="insight-card" style="background:#ECFEFF; border-color:#A5F3FC; color:#0E7490">
-            <i class="fas fa-road"></i>
-            <div>十年词频，记录时代变迁；十年民生，映照群众幸福。从脱贫攻坚的全面胜利，到乡村振兴的深入推进，从公共服务的不断完善到人民生活品质的持续提升，新疆民生事业在这十年间实现了从“补短板"到“提品质”的跨越式发展。</div>
+        <div class="sec-quote" style="border-left-color: #06B6D4;">
+            “坚持把发展落到改善民生、惠及当地、增进团结上，用心用情用力解决群众急难愁盼，让发展成果更多更公平惠及各族人民。”
+            <span class="author">——《新时代党的治疆方略的成功实践》白皮书新闻发布会</span>
         </div>
+        <p class="sec-text">站在十年征程的节点，我们逐载回望、细数荣光，解锁每一年的重磅辉煌成就，见证天山南北日新月异的发展蝶变，感受各族群众步步升温的幸福质感，读懂新时代新疆高质量发展的硬核底气与民生温度。</p>
+        
         <div class="ms-wrapper">
-            <div class="ms-item"><div class="ms-year-dot">2016</div><div class="ms-content"><span class="ms-tag">安居工程</span><div class="ms-text">南疆易地扶贫搬迁启动，昌吉州率先实现贫困县摘帽。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2017</div><div class="ms-content"><span class="ms-tag">就业帮扶</span><div class="ms-text">“短平快”项目持续发力，喀什、和田等地通过乡村工厂带动就业。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2018</div><div class="ms-content"><span class="ms-tag">全民体检</span><div class="ms-text">全民体检制度深化实施，社会救助体系向分层分类转型。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2019</div><div class="ms-content"><span class="ms-tag">沙漠迁徙</span><div class="ms-text">达里雅布依乡村民搬出沙漠腹地，彻底解决“就医难、上学难”。</div></div></div>
-            <div class="ms-item highlight"><div class="ms-year-dot">2020</div><div class="ms-content"><span class="ms-tag">历史胜利</span><div class="ms-text">脱贫攻坚全面胜利，全区贫困县摘帽。“脱贫”词频达十年峰值。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2021</div><div class="ms-content"><span class="ms-tag">智慧医疗</span><div class="ms-text">“行走的医院”落地，配备全科医生助诊包，三甲医院远程会诊。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2022</div><div class="ms-content"><span class="ms-tag">权益保障</span><div class="ms-text">《老年人权益保障条例》施行；住房公积金异地贷款政策统一。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2023</div><div class="ms-content"><span class="ms-tag">低保提标</span><div class="ms-text">提高城乡低保标准，职业技能培训精准化推进。</div></div></div>
-            <div class="ms-item"><div class="ms-year-dot">2024</div><div class="ms-content"><span class="ms-tag">教育覆盖</span><div class="ms-text">南疆五地州实现本科教育全覆盖。</div></div></div>
-            <div class="ms-item highlight"><div class="ms-year-dot">2025</div><div class="ms-content"><span class="ms-tag">70周年</span><div class="ms-text">民生提质成果集中展示，“幸福感”词频创十年新高。</div></div></div>
+            <div class="ms-item highlight"><div class="ms-year-dot">2016</div><div class="ms-content">
+                <span class="ms-tag">脱贫攻坚成就</span>
+                <div class="ms-text">脱贫攻坚取得决定性成就，全州4436户14975名建档立卡贫困人口于2016年在全疆率先实现脱贫，贫困县全部摘帽，全州各族群众与全国人民一道建成小康社会。</div>
+                <div class="ms-excerpt">2014年，昌吉州识别农村贫困人口4110户、14688人，贫困村10个，分布于木垒县、奇台县、吉木萨尔县、阜康市4个县（市）。通过精准施策、产业帮扶、就业增收等一系列举措，2016年底实现贫困村全部退出、贫困人口全部脱贫，贫困发生率从2014年的2.04%降至0%，成为新疆首个实现贫困县全部摘帽的地州，为全疆脱贫攻坚工作树立了标杆、提供了经验。</div>
+                <div class="ms-source">——摘自《新疆日报》2024-09-06 A06版《让人民生活更加美好——昌吉回族自治州成立70年民生建设纪实》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2017</div><div class="ms-content">
+                <span class="ms-tag">就业惠民工程</span>
+                <div class="ms-text">就业惠民工程取得扎实成效，“短平快”产业项目持续发力见效，喀什、和田等地依托乡村工厂、卫星车间、小微工坊，精准吸纳农村富余劳动力就近上岗，实现顾家增收两不误，筑牢南疆就业增收底线，为巩固脱贫成果、推进乡村振兴奠定坚实基础。</div>
+                <div class="ms-excerpt">聚焦南疆四地州就业难题，当地立足产业实际，以门槛低、见效快、带动性强为导向，布局服装加工、家纺缝制、特色手作、农产品初加工等小微产业，搭建家门口就业平台，开展定向技能培训，破解农村劳动力外出务工与顾家难的矛盾，带动万千群众从田间走向车间，实现稳定就业、持续增收。</div>
+                <div class="ms-source">——摘自《新疆日报》2017-12-04 A07版《“短平快”项目赋能南疆就业 乡村工厂托起百姓增收梦》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2018</div><div class="ms-content">
+                <span class="ms-tag">医疗兜底保障</span>
+                <div class="ms-text">医疗惠民与兜底保障同步提质，全民健康体检制度深化实施，社会救助体系向分层分类转型，切实守护各族群众健康底线、筑牢民生保障网，推动民生福祉持续升级。</div>
+                <div class="ms-excerpt">聚焦群众健康需求，2018年新疆全面推进第三轮全民免费健康体检，优化体检项目、细化人群分类，扩大慢性病与结核病筛查范围，全年1749.23万各族群众受益，实现体检全覆盖，建立健康档案、畅通转诊救治通道，做到早发现、早诊断、早治疗；同步推进社会救助改革，以精准兜底为核心，健全低保、特困、医疗、临时救助衔接机制，针对不同困难群体实施分类施策、分层保障，全年安排困难群众救助资金73.1亿元，惠及城乡低保、特困及临时困难群体，让救助更精准、保障更有力。</div>
+                <div class="ms-source">——摘自《新疆日报》2019-03-20 A05版《健康惠民守底线 精准救助暖民心——2018年新疆民生事业发展纪实》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2019</div><div class="ms-content">
+                <span class="ms-tag">深度贫困跨越</span>
+                <div class="ms-text">民生改善再添硬核举措，深度贫困地区实现历史性跨越。达里雅布依乡村民整体搬出沙漠腹地，彻底解决长期困扰群众的 “就医难、上学难” 问题，让各族群众共享发展红利，书写了新疆脱贫攻坚史上的动人篇章。</div>
+                <div class="ms-excerpt">聚焦深度贫困堡垒，2019 年新疆启动实施达里雅布依乡整体搬迁工程，将世代生活在塔克拉玛干沙漠腹地的 1311 名群众整体搬迁至于田县喀孜纳克开发区。新建标准化学校、卫生院、党群服务中心等配套设施，同步完善供水、供电、道路等基础设施，配套产业就业项目同步落地，让群众 “搬得出、稳得住、能致富”。搬迁后，当地儿童就近入学、群众看病就医条件全面改善，彻底终结了 “深沙无路、看病无门、求学不易” 的历史，民生保障实现从无到有、从有到优的跨越式提升。</div>
+                <div class="ms-source">—— 摘自《新疆日报》2020-01-15 A03 版《沙漠腹地迁新居 民生福祉谱新篇 ——2019 年新疆深度贫困地区民生改善纪实》</div>
+            </div></div>
+
+            <div class="ms-item highlight"><div class="ms-year-dot">2020</div><div class="ms-content">
+                <span class="ms-tag">历史性胜利</span>
+                <div class="ms-text">脱贫攻坚取得历史性胜利，全区贫困县全部摘帽，绝对贫困问题得到历史性解决，新疆日报报道中“脱贫”一词频次攀升至十年峰值，镌刻下天山南北决战决胜脱贫攻坚的里程碑时刻。</div>
+                <div class="ms-excerpt">历经多年精准施策、攻坚克难，2020年11月14日，新疆最后10个深度贫困县经评估核查正式退出贫困县序列。至此，全区32个贫困县全部摘帽，3666个贫困村全部退出，308.9万现行标准下农村贫困人口全部脱贫，“两不愁三保障”全面实现，区域性整体贫困彻底消除。这一彪炳史册的成就，兑现了庄严承诺，改写了新疆贫困地区发展历史，为全面推进乡村振兴、迈向共同富裕筑牢坚实根基。</div>
+                <div class="ms-source">——摘自《新疆日报》2020-12-08 A02版《历史性跨越 根本性改变——新疆打赢脱贫攻坚战纪实》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2021</div><div class="ms-content">
+                <span class="ms-tag">智慧医疗升级</span>
+                <div class="ms-text">智慧医疗建设提速升级，医疗惠民服务提质增效。“行走的医院”项目落地基层，全科医生助诊包配齐投用，三甲医院远程会诊全面铺开，优质医疗资源精准下沉，打通基层群众就医“最后一公里”。</div>
+                <div class="ms-excerpt">聚焦基层就医痛点，2021年新疆大力推进“互联网+医疗健康”改革，率先在部分县市落地“行走的医院”数字化诊疗项目，为基层村卫生室配齐含便携检查、快速检测设备的全科医生助诊包，让村医上门即可开展基础诊疗；同步搭建远程诊疗平台，联通疆内外多家三甲医院，实现检查数据实时传输、专家在线会诊、疑难病症远程诊断，让偏远地区群众足不出村、足不出乡，就能享受优质高效的医疗服务，大幅提升基层就医便捷度与诊疗水平，筑牢全民健康防线。</div>
+                <div class="ms-source">——摘自《新疆日报》2022-01-12 A04版《智慧医疗惠民生 优质服务暖人心——2021年新疆医疗惠民工作纪实》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2022</div><div class="ms-content">
+                <span class="ms-tag">权益全面保障</span>
+                <div class="ms-text">《新疆维吾尔自治区老年人权益保障条例》自9月1日起正式施行，以增进老年人福祉为目标，紧扣老年民生诉求，在家庭赡养、社会保障、社会服务、社会优待等方面出台多项创新举措...</div>
+                <div class="ms-excerpt">包括建立高龄津贴普惠制度、设立子女护理假（独生子女每年累计不少于二十天）、明确六十五周岁以上老年人免费乘坐公交及进入景区等优待政策，推动实现老有所养、老有所医、老有所乐。<br><br>新疆统一全区住房公积金异地个人住房贷款政策，全面实行异地贷款业务，缴存职工在全区各地购房可向缴存地或购房地申请公积金贷款，购房地中心不得设置缴存地、户籍地等附加条件，异地贷款职工与本地缴存职工享有同等权益，同时压缩贷款审批时限至5个工作日以内，并推行异地贷款“按月对冲”还贷业务，更好满足缴存职工异地购房需求。</div>
+                <div class="ms-source">——摘自《新疆日报》2022-08-27 官方公报版；2022-09-08转载中国建设报</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2023</div><div class="ms-content">
+                <span class="ms-tag">兜底与赋能</span>
+                <div class="ms-text">兜底保障与就业赋能双轨并行，民生福祉持续提档升级。城乡低保标准全面提高，职业技能培训实现精准化推进，筑牢困难群众生活底线，拓宽群众就业增收渠道。</div>
+                <div class="ms-excerpt">聚焦民生兜底和就业提质核心任务，2023年新疆稳步提高城乡低保对象基本生活保障水平，细化补助标准、优化审核流程，切实保障困难群众基本生活，让兜底更有温度、更具力度；同步聚焦市场需求和群众就业意愿，推进精准化职业技能培训，围绕家政服务、手工制作、农牧技术、电商运营等热门领域，开展订单式、定岗式培训，打通培训到就业的闭环链条，助力群众提升就业技能、实现稳定增收，推动民生保障从“兜底”向“提质”转变。</div>
+                <div class="ms-source">——摘自《新疆日报》2024-02-08 A05版《兜底有温度 就业有精度——2023年新疆民生保障与就业帮扶工作纪实》</div>
+            </div></div>
+
+            <div class="ms-item"><div class="ms-year-dot">2024</div><div class="ms-content">
+                <span class="ms-tag">高教历史突破</span>
+                <div class="ms-text">高等教育布局实现历史性突破，教育惠民覆盖再提质。南疆五地州历史性实现本科教育全覆盖，补齐区域高等教育短板，让各族青年在家门口就近享有优质本科教育资源，书写新疆教育高质量发展新篇章。</div>
+                <div class="ms-excerpt">聚焦南疆教育发展薄弱环节，2024年新疆持续优化高等教育资源布局，随着新疆和田学院揭牌成立、新疆天山职业技术大学克州校区顺利招生，巴音郭楞蒙古自治州、阿克苏地区、喀什地区、和田地区、克孜勒苏柯尔克孜自治州五地州均落地本科院校，彻底打破南疆高等教育资源分布不均的格局。此举填补了多地本科教育空白，让更多南疆学子就近升学圆梦，为南疆发展培育本土人才、筑牢长远民生根基，成为新时代新疆教育惠民的标志性成就。</div>
+                <div class="ms-source">——摘自《新疆日报》2024-12-17 A04版《绘就教育高质量发展新画卷》</div>
+            </div></div>
+
+            <div class="ms-item highlight"><div class="ms-year-dot">2025</div><div class="ms-content">
+                <span class="ms-tag">圆满收官</span>
+                <div class="ms-text">喜迎新疆维吾尔自治区成立70周年，十年民生提质成果集中展示、全面收官。新疆日报报道中“幸福感”一词频次创下十年新高，生动镌刻下各族群众获得感、幸福感、安全感持续攀升的温暖印记。</div>
+                <div class="ms-excerpt">回望十年民生征程，2025年以70周年华诞为契机，系统梳理就业、教育、医疗、社保、安居等领域惠民成效，全方位展现天山南北民生改善的跨越式发展。从兜底保障筑牢底线，到优质服务普惠全域，件件民生实事落地见效，各项惠民政策走深走实，发展成果更多更公平惠及各族人民，让幸福底色更浓、民生温度更足，为新时代新疆高质量发展写下温暖注脚。</div>
+                <div class="ms-source">——摘自《新疆日报》2025-10-01 A01版《七十载春华秋实 惠民生幸福绵长——新疆成立70周年民生成果综述》</div>
+            </div></div>
         </div>
+    </div>
+</div>
+
+<div id="sec-job" class="section-page">
+    <div class="sec-header"><div class="sec-title">03 就业创业</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “就业是最大的民生工程、民心工程、根基工程人民日报。”
+            <span class="author">——《人民日报》2024-05-22</span>
+        </div>
+        <p class="sec-text">十年筑梦，就业为先；创业潮涌，技能赋能。回望近十年，新疆始终将就业创业置于发展核心， 以就业稳大局、以创业添活力、以技能强动能、以收入惠民生。</p>
+        
+        <div class="click-hint"><i class="fas fa-hand-pointer"></i> 点击柱状图年份查看雷达分布</div>
+        <div id="chart-job-trend" class="chart-box" style="height:250px;"></div>
+        <div id="chart-job-radar" class="chart-box"></div>
+        
+        <p class="sec-text">从城镇新增就业年均超46万到农村劳动力外出务工超3000万人次，从“技能照亮前程”行动遍地开花到电商、文旅等新业态创业热潮迭起，就业、创业、技能、收入四词持续领跑民生报道频次。</p>
+    </div>
+</div>
+
+<div id="sec-edu" class="section-page">
+    <div class="sec-header"><div class="sec-title">04 教育发展</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “教育是国之大计、党之大计，也是新疆长治久安、民生改善的治本之策。”
+            <span class="author">——《新疆日报》2024-12-17</span>
+        </div>
+        <p class="sec-text">教育兴则国家兴，教育强则民族强。回望新时代十年非凡征程，新疆始终把教育摆在优先发展的战略位置，深耕民生根基、厚植育人沃土。</p>
+        
+        <div class="click-hint"><i class="fas fa-hand-pointer"></i> 点击图表数据节点，可查看具体维度的详细数值</div>
+        <div id="chart-edu-trend" class="chart-box"></div>
+        <div id="chart-edu-structure" class="chart-box"></div>
+
+        <p class="sec-text">教育事业在十年间实现了从“普及”到“优质”的跨越，成为新疆民生改善的重要驱动力。从筑牢基础教育底线、补齐南疆教育短板，到优化高等教育布局、推进职业教育提质，从改善办学条件、建强师资队伍，到深化教育改革、推进教育公平，每一项举措都紧贴群众期盼，每一步跨越都彰显民生温度。</p>
+    </div>
+</div>
+
+<div id="sec-medical" class="section-page">
+    <div class="sec-header"><div class="sec-title">05 医疗健康</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “让健康幸福更有‘医靠’，让民生保障更有温度。”
+            <span class="author">——摘自《新疆日报》2022年5月10日</span>
+        </div>
+        <p class="sec-text">健康是民生之基，守护万家安康是不变的初心使命。梳理十年权威报道轨迹，医疗、医保、体检三大关键词在不同年度高频亮相、热度攀升，清晰勾勒出新疆医疗健康事业的奋进足迹。</p>
+        
+        <div id="chart-medical" class="chart-box"></div>
+        
+        <p class="sec-text">从基层诊疗能力不断提升，到医保覆盖范围持续扩面；从全民健康体检常态化落地，到优质医疗资源下沉普惠，每一次词频走高，都对应着一项惠民实事落地，每一轮报道聚焦，都见证着健康保障的迭代升级。</p>
+    </div>
+</div>
+
+<div id="sec-living" class="section-page">
+    <div class="sec-header"><div class="sec-title">06 生活保障</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “织密民生保障网，托起百姓幸福感。”
+            <span class="author">——摘自《新疆日报》2025年6月20日</span>
+        </div>
+        <p class="sec-text">民生无小事，枝叶总关情。新疆始终把群众安危冷暖放在心头，聚焦民生刚需、补齐保障短板，用实打实的举措筑牢生活底线，让发展成果公平惠及各族群众。</p>
+        
+        <div id="chart-living" class="chart-box" style="height:350px;"></div>
+        
+        <p class="sec-text">梳理十年权威报道轨迹，收入、住房、养老、社保四大关键词在不同年度高频亮相、热度攀升，清晰勾勒出新疆生活保障事业的奋进足迹。<br>从城乡居民收入稳步增长，到安居工程惠及千家万户；从养老服务体系日趋完善，到社保兜底覆盖全域，每一次词频走高，都对应着一项惠民实事落地，每一轮报道聚焦，都见证着保障水平的迭代升级。</p>
+    </div>
+</div>
+
+<div id="sec-rural" class="section-page">
+    <div class="sec-header"><div class="sec-title">07 乡村振兴</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “仓廪实而知礼节，衣食足而知荣辱。”
+            <span class="author">——《管子·牧民》</span>
+        </div>
+        <p class="sec-text">乡村兴则国家兴，乡村强则天下安。新疆从脱贫攻坚迈向乡村振兴，一步一个脚印、一年一个台阶，广袤乡村迎来翻天覆地的深刻变化。乡村从“脱贫摘帽”到“全面振兴”的历史性跨越，记录各族群众在乡村振兴浪潮中安居乐业、增收致富、奔向美好生活的生动实践。</p>
+        
+        <div class="sec-sub-title" style="font-size:14px; border:none; padding:0; margin-bottom:5px; color:#64748B;">（一）脱贫和振兴趋势图</div>
+        <div id="chart-rural" class="chart-box"></div>
+        
+        <div class="sec-sub-title" style="font-size:14px; border:none; padding:0; margin-bottom:5px; color:#64748B;">（二）设施、产业、乡风、生态、组织等词频图</div>
+        <div id="chart-rural-2" class="chart-box"></div>
+        
+        <p class="sec-text">从产业发展到人居环境，从基础设施到公共服务，从乡风文明到治理有效，天山南北的乡村大地处处焕发勃勃生机，一幅产业兴旺、生态宜居、乡风文明、治理有效、生活富裕的壮美画卷徐徐展开。</p>
+    </div>
+</div>
+
+<div id="sec-happy" class="section-page">
+    <div class="sec-header"><div class="sec-title">08 幸福展望</div><div class="back-btn" onclick="goHome()"><i class="fas fa-times"></i></div></div>
+    <div class="content-area">
+        <div class="sec-quote">
+            “治国有常，而利民为本。”
+            <span class="author">——《淮南子·氾论训》</span>
+        </div>
+        <p class="sec-text">岁月镌刻奋进足迹，数字见证幸福温度。回望新时代十年征程，民生答卷字字暖心，发展成果声声可鉴，幸福感、获得感两大关键词在权威报道中频次逐年攀升，成为天山南北民生改善最鲜活的注脚、最生动的诠释。</p>
+        
+        <div id="chart-happy" class="chart-box"></div>
+        
+        <p class="sec-text">十年栉风沐雨，十年春华秋实。从民生短板补齐到福祉全面提质，从基础保障夯实到幸福质感升级，幸福感、获得感的高频回响，是时代赋予的答卷，更是群众心底的共鸣。<br><br>站在新的历史起点，民生之路未有穷期，幸福征程永不止步。未来，新疆将继续坚守利民初心，深耕民生事业，让发展红利持续释放，让各族群众的获得感成色更足、幸福感更可持续、安全感更有保障，在同心筑梦的道路上，续写更多温暖人心的民生华章。</p>
     </div>
 </div>
 
@@ -509,8 +517,9 @@
         
         setTimeout(() => {
             if(secId === 'sec-overview') initChartOverview();
-            if(secId === 'sec-edu') initChartEdu();
+            // 注意这里无需初始化里程碑图表，因为它是纯文本
             if(secId === 'sec-job') initChartJob();
+            if(secId === 'sec-edu') initChartEdu();
             if(secId === 'sec-medical') initChartMedical();
             if(secId === 'sec-living') initChartLiving();
             if(secId === 'sec-rural') initChartRural();
@@ -519,34 +528,67 @@
     }
 
     // ================= 数据中心 (Data) =================
-    const years = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
-    const dataPoverty = [12053, 15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
-    const dataQuality = [4357, 4549, 5758, 5957, 6285, 5789, 8293, 6720, 5698, 5825, 7142] ;
-    const eduTrendData = [11514, 11368, 14484, 15283, 19403, 9294, 20446, 10036, 12871, 13964, 15057];
+    const years = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'];
+    const dataPoverty = [15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
+    const dataQuality = [4549, 5758, 5957, 6285, 5789, 8293, 6720, 5698, 5825, 7142] ;
+    
+    // --- 新增: 01总述板块配套数据 ---
+    const overviewBubbleData = [
+        {name: '要闻', value: [30, 80, 100], itemStyle: {color: '#EF4444'}},
+        {name: '经济', value: [50, 40, 75], itemStyle: {color: '#3B82F6'}},
+        {name: '社会', value: [70, 70, 85], itemStyle: {color: '#10B981'}},
+        {name: '新农村', value: [20, 50, 65], itemStyle: {color: '#F59E0B'}},
+        {name: '文化', value: [80, 30, 55], itemStyle: {color: '#8B5CF6'}},
+        {name: '生态', value: [40, 20, 45], itemStyle: {color: '#EC4899'}}
+    ];
+    const overviewPieData = [
+        {value: 45, name: '通讯'},
+        {value: 30, name: '消息'},
+        {value: 12, name: '特写'},
+        {value: 8, name: '调查报告'},
+        {value: 5, name: '专访'}
+    ];
+    const overviewRegionData = [
+        {name: '喀什地区', value: 850},
+        {name: '和田地区', value: 720},
+        {name: '乌鲁木齐市', value: 680},
+        {name: '阿克苏地区', value: 540},
+        {name: '伊犁州', value: 490},
+        {name: '昌吉州', value: 410}
+    ].reverse(); // 翻转以适配水平条形图自上而下排序
+
+    // --- 其他原有板块数据 ---
+    const eduTrendData = [11368, 14484, 15283, 19403, 9294, 20446, 10036, 12871, 13964, 15057];
     const eduStructData = [{value: 60, name: '义务教育'}, {value: 30, name: '职业教育'}, {value: 10, name: '高等教育'}];
-    const radarDataMap = {'2015': [5942, 2745, 483, 4269], '2016': [6791, 3137, 552, 4359], '2017': [7641, 3529, 621, 5749], '2018': [8489, 3922, 691, 5811], '2019': [8321, 3805, 614, 5574], '2020': [11978, 3045, 487, 6268], '2021': [9220, 3248, 641, 7545], '2022': [6371, 2608, 374, 4181], '2023': [5993, 2525, 333, 3624], '2024': [5045, 1764, 350, 3592], '2025': [4288, 1499, 297, 4272]} ;
-    const jobTrend = [5942, 6791, 7641, 8489, 8321, 11978, 9220, 6371, 5993, 5045, 4288] ;
-    const medData = [3107, 3932, 3867, 4559, 4191, 10824, 7529, 3847, 3939, 3668, 3397] ;
-    const insData = [268, 355, 409, 420, 423, 721, 733, 559, 502, 833, 1164] ;
-    const checkData = [13, 27, 1209, 1503, 1821, 1205, 804, 402, 706, 105, 153] ;
-    const housingData = [2152, 2301, 2693, 2813, 2981, 2456, 3460, 1617, 1358, 1293, 1229] ;
-    const socialData = [429, 534, 593, 628, 1640, 1405, 924, 522, 533, 410, 287] ;
-    const elderlyData = [1203, 1555, 1705, 1837, 1918, 1209, 2219, 1406, 1219, 1687, 2155] ;
-    const incomeData = [4067, 4648, 5229, 5811, 5574, 6268, 7545, 4181, 3624, 3592, 3053] ;
-    const ruralPoverty = [12053, 15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
-    const ruralRevital = [241, 487, 883, 3574, 1729, 1410, 5312, 3817, 3339, 2711, 4500] ;
-    const happyTrend = [435, 454, 575, 936, 1181, 672, 1279, 722, 482, 893, 1583] ;
+    const radarDataMap = {'2016': [6791, 3137, 552, 4359], '2017': [7641, 3529, 621, 5749], '2018': [8489, 3922, 691, 5811], '2019': [8321, 3805, 614, 5574], '2020': [11978, 3045, 487, 6268], '2021': [9220, 3248, 641, 7545], '2022': [6371, 2608, 374, 4181], '2023': [5993, 2525, 333, 3624], '2024': [5045, 1764, 350, 3592], '2025': [4288, 1499, 297, 4272]} ;
+    const jobTrend = [6791, 7641, 8489, 8321, 11978, 9220, 6371, 5993, 5045, 4288] ;
+    const medData = [3932, 3867, 4559, 4191, 10824, 7529, 3847, 3939, 3668, 3397] ;
+    const insData = [355, 409, 420, 423, 721, 733, 559, 502, 833, 1164] ;
+    const checkData = [27, 1209, 1503, 1821, 1205, 804, 402, 706, 105, 153] ;
+    const housingData = [2301, 2693, 2813, 2981, 2456, 3460, 1617, 1358, 1293, 1229] ;
+    const socialData = [534, 593, 628, 1640, 1405, 924, 522, 533, 410, 287] ;
+    const elderlyData = [1555, 1705, 1837, 1918, 1209, 2219, 1406, 1219, 1687, 2155] ;
+    const incomeData = [4648, 5229, 5811, 5574, 6268, 7545, 4181, 3624, 3592, 3053] ;
+    const ruralPoverty = [15312, 18907, 20076, 20659, 26593, 18546, 6432, 3246, 2720, 523] ;
+    const ruralRevital = [487, 883, 3574, 1729, 1410, 5312, 3817, 3339, 2711, 4500] ;
+    const happyTrend = [454, 575, 936, 1181, 672, 1279, 722, 482, 893, 1583] ;
+    const ruralMultiTrend = {
+        '设施': [230, 310, 420, 380, 500, 620, 480, 510, 600, 750],
+        '产业': [410, 550, 680, 810, 700, 950, 1100, 1050, 1200, 1350],
+        '乡风': [80, 120, 150, 200, 180, 250, 290, 310, 350, 420],
+        '生态': [200, 280, 350, 420, 400, 560, 610, 650, 720, 800],
+        '组织': [110, 150, 180, 220, 250, 310, 280, 300, 340, 400]
+    };
 
     // ================= ECharts =================
-    // 图表文字颜色调整为深色
     const textColor = '#475569'; 
     const splitColor = '#E2E8F0';
     const gridConfig = {left:'2%', right:'2%', bottom:'2%', top:'15%', containLabel:true};
 
-    // 1. Overview
+    // 01 民生总述 - 初始化
     function initChartOverview() {
-        const chart = echarts.init(document.getElementById('chart-overview'));
-        chart.setOption({
+        // 折线图
+        echarts.init(document.getElementById('chart-overview')).setOption({
             tooltip: {trigger: 'axis'}, grid: gridConfig, 
             legend: {textStyle:{color:textColor}, top:0}, 
             xAxis: {type: 'category', data: years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}},
@@ -556,9 +598,50 @@
                 {name: '提质', type: 'line', smooth:true, data: dataQuality, lineStyle:{width:3, color:'#F59E0B'}}
             ]
         });
+        
+        // 视角气泡散点图
+        echarts.init(document.getElementById('chart-overview-bubble')).setOption({
+            tooltip: {formatter: function (params) { return params.data.name + ' 热度: ' + params.data.value[2]; }},
+            grid: {left:'5%', right:'5%', bottom:'5%', top:'5%'},
+            xAxis: {show: false, min: 0, max: 100}, yAxis: {show: false, min: 0, max: 100},
+            series: [{
+                type: 'scatter', symbolSize: function (data) { return data[2]; },
+                label: {show: true, formatter: '{b}', position: 'inside', color: '#fff', fontSize: 14, fontWeight: 'bold'},
+                itemStyle: {shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.1)'},
+                data: overviewBubbleData
+            }]
+        });
+
+        // 报道体裁饼图
+        echarts.init(document.getElementById('chart-overview-pie')).setOption({
+            tooltip: {trigger: 'item', formatter: '{b}: {d}%'},
+            legend: {bottom: '0', textStyle:{color:textColor}},
+            series: [{
+                type: 'pie', radius: ['30%', '65%'], center: ['50%', '45%'],
+                roseType: 'radius',
+                itemStyle: {borderRadius: 8},
+                label: {color: textColor},
+                color: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
+                data: overviewPieData
+            }]
+        });
+
+        // 地区热度条形图
+        echarts.init(document.getElementById('chart-overview-bar')).setOption({
+            tooltip: {trigger: 'axis', axisPointer: {type: 'shadow'}},
+            grid: {left: '2%', right: '5%', bottom: '2%', top: '5%', containLabel: true},
+            xAxis: {type: 'value', show: false},
+            yAxis: {type: 'category', data: overviewRegionData.map(d=>d.name), axisLabel:{color:textColor, fontSize:13}, axisLine:{show:false}, axisTick:{show:false}},
+            series: [{
+                type: 'bar', barWidth: 20,
+                itemStyle: {borderRadius: [0, 10, 10, 0], color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{offset: 0, color: '#FCA5A5'}, {offset: 1, color: '#DC2626'}])},
+                label: {show: true, position: 'right', color: '#DC2626', fontWeight: 'bold'},
+                data: overviewRegionData.map(d=>d.value)
+            }]
+        });
     }
 
-    // 3. Edu
+    // 其他图表函数 (保持逻辑不变)
     function initChartEdu() {
         echarts.init(document.getElementById('chart-edu-trend')).setOption({
             tooltip: {trigger: 'axis'}, grid: gridConfig, 
@@ -571,7 +654,6 @@
         });
     }
 
-    // 4. Job
     let radarChart = null;
     function initChartJob() {
         const trend = echarts.init(document.getElementById('chart-job-trend'));
@@ -597,7 +679,6 @@
         });
     }
 
-    // 5. Medical
     function initChartMedical() {
         echarts.init(document.getElementById('chart-medical')).setOption({
             tooltip: {trigger:'axis'}, 
@@ -608,7 +689,6 @@
         });
     }
 
-    // 6. Living
     function initChartLiving() {
         echarts.init(document.getElementById('chart-living')).setOption({
             tooltip: {trigger:'axis'}, legend:{top:0, textStyle:{color:textColor}}, grid: gridConfig,
@@ -620,7 +700,6 @@
         });
     }
 
-    // 7. Rural
     function initChartRural() {
         echarts.init(document.getElementById('chart-rural')).setOption({
             tooltip: {trigger:'axis'}, 
@@ -629,13 +708,26 @@
             xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
             series: [{name:'脱贫',type:'line',data:ruralPoverty,color:'#EC4899'}, {name:'振兴',type:'line',data:ruralRevital,color:'#10B981'}]
         });
+        
+        echarts.init(document.getElementById('chart-rural-2')).setOption({
+            tooltip: {trigger:'axis'}, 
+            legend:{top:0, textStyle:{color:textColor}}, 
+            grid: gridConfig,
+            xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{splitLine:{lineStyle:{color:splitColor}}, axisLabel:{color:textColor}},
+            series: [
+                {name:'设施',type:'line',data:ruralMultiTrend['设施'],color:'#3B82F6'}, 
+                {name:'产业',type:'line',data:ruralMultiTrend['产业'],color:'#F59E0B'},
+                {name:'乡风',type:'line',data:ruralMultiTrend['乡风'],color:'#EC4899'},
+                {name:'生态',type:'line',data:ruralMultiTrend['生态'],color:'#10B981'},
+                {name:'组织',type:'line',data:ruralMultiTrend['组织'],color:'#8B5CF6'}
+            ]
+        });
     }
 
-    // 9. Happy
     function initChartHappy() {
         echarts.init(document.getElementById('chart-happy')).setOption({
             tooltip: {trigger:'axis'}, grid: gridConfig, xAxis: {data:years, axisLabel:{color:textColor}, axisLine:{lineStyle:{color:splitColor}}}, yAxis:{show:false},
-            visualMap: {show:false, dimension:0, pieces:[{lte:5, color:'#CBD5E1'},{gt:5, lte:9, color:'#F59E0B'},{gt:9, color:'#EF4444'}]},
+            visualMap: {show:false, dimension:0, pieces:[{lte:4, color:'#CBD5E1'},{gt:4, lte:8, color:'#F59E0B'},{gt:8, color:'#EF4444'}]},
             series: [{type:'line', data:happyTrend, lineStyle:{width:4}, markLine:{data:[{xAxis:'2025'}], lineStyle:{color:'#DC2626'}}}]
         });
     }
